@@ -1,0 +1,11 @@
+/_build
+/cover
+/deps
+/doc
+/.fetch
+erl_crash.dump
+*.ez
+
+/priv/test/migrations/*
+!/priv/test/migrations/20170320052040_create_user.exs
+/tmp

@@ -1,0 +1,10 @@
+language: elixir
+matrix:
+  include:
+    - otp_release: 19.0
+      elixir: 1.4
+script:
+  - mix test
+  - mix credo
+env:
+  - MIX_ENV=test
