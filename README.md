@@ -41,6 +41,7 @@ defmodule MyApp.Router do
     pipe_through :protected # Make sure that a user session exists
     oauth2_paths()
   end
+end
 ```
 
 That's it! The following OAuth 2.0 routes will now be available in your app:
