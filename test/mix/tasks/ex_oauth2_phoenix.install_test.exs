@@ -59,6 +59,21 @@ defmodule Mix.Tasks.ExOauth2Phoenix.InstallTest do
     end
   end
 
+  test "updates config" do
+    in_tmp "installs_ex_oauth2_phoenix_config", fn ->
+      file_path = "config.exs"
+      File.touch! file_path
+      ~w(--repo ExOauth2Phoenix.Test.Repo --no-boilerplate --no-migrations --config-file #{File.cwd!}/#{file_path})
+      |> Mix.Tasks.ExOauth2Phoenix.Install.run
+
+      assert_file file_path, fn file ->
+        assert file =~ "config :ex_oauth2_phoenix, ExOauth2Phoenix"
+        assert file =~ "module: ExOauth2Phoenix"
+        assert file =~ "current_resource_owner: :current_user"
+      end
+    end
+  end
+
   describe "installs ex_oauth2_provider" do
     test "adds migrations" do
       ~w(--repo ExOauth2Phoenix.Test.Repo --no-boilerplate --no-config --repo #{to_string MigrationsRepo})
@@ -71,11 +86,13 @@ defmodule Mix.Tasks.ExOauth2Phoenix.InstallTest do
       in_tmp "installs_ex_oauth2_provider_config", fn ->
         file_path = "config.exs"
         File.touch! file_path
-        ~w(--repo ExOauth2Phoenix.Test.Repo --no-boilerplate --no-migrations --config-file #{File.cwd!}/#{file_path})
+        ~w(--repo ExOauth2Phoenix.Test.Repo --no-boilerplate --no-migrations --config-file #{File.cwd!}/#{file_path} --resource-owner MyApp.CustomUser)
         |> Mix.Tasks.ExOauth2Phoenix.Install.run
 
         assert_file file_path, fn file ->
           assert file =~ "config :ex_oauth2_provider, ExOauth2Provider"
+          assert file =~ "repo: Elixir.ExOauth2Phoenix.Test.Repo"
+          assert file =~ "resource_owner: MyApp.CustomUser"
         end
       end
     end
@@ -109,14 +126,4 @@ defmodule Mix.Tasks.ExOauth2Phoenix.InstallTest do
       refute_file path <> file
     end
   end
-
-  # def with_generator_env(new_env, fun) do
-  #   old = Application.get_env(:phoenix, :generators)
-  #   Application.put_env(:phoenix, :generators, new_env)
-  #   try do
-  #     fun.()
-  #   after
-  #     Application.put_env(:phoenix, :generators, old)
-  #   end
-  # end
 end

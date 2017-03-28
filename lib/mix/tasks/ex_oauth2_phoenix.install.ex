@@ -19,8 +19,9 @@ defmodule Mix.Tasks.ExOauth2Phoenix.Install do
   ## Option list
   A ExOauth2Phoenix configuration will be appended to your `config/config.exs` file unless
   the `--no-config` option is given.
-  A `--resource_owner="SomeModule"` option can be given to override the default User module.
-  A `--repo=CustomRepo` option can be given to override the default Repo module
+  A `--resource-owner MyApp.User` option can be given to override the default resource owner module in config
+  A `--repo MyApp.Repo` option can be given to override the default Repo module
+  A `--config-file config/config.exs` option can be given to change what config file to append to.
   A `--controllers` option to generate controllers boilerplate (not default)
   A `--installed-options` option to list the previous install options
   ## Disable Options
@@ -82,9 +83,9 @@ defmodule Mix.Tasks.ExOauth2Phoenix.Install do
 
   defp gen_ex_oauth2_phoenix_config(config) do
     """
-config :ex_oauth2_phoenix,
+config :ex_oauth2_phoenix, ExOauth2Phoenix,
   module: #{config[:base]},
-  opts: #{inspect config[:opts]}\n
+  current_resource_owner: :current_user\n
 """
     |> write_config(config)
     |> log_config
@@ -130,15 +131,20 @@ config :ex_oauth2_phoenix,
   # ExOauth2Provider
 
   defp install_ex_oauth2_provider(%{provider: true, config: true, config_file: config_file, repo: repo} = config) do
-    Mix.Tasks.ExOauth2Provider.Install.run ~w(--config-file #{config_file} --repo #{repo})
-    config
+    install_ex_oauth2_provider_task(config, ~w())
   end
   defp install_ex_oauth2_provider(%{provider: true, config: false, config_file: config_file, repo: repo} = config) do
-    Mix.Tasks.ExOauth2Provider.Install.run ~w(--config-file #{config_file} --repo #{repo} --no-config)
-    config
+    install_ex_oauth2_provider_task(config, ~w(--no-config))
   end
   defp install_ex_oauth2_provider(config), do: config
-
+  defp install_ex_oauth2_provider_task(%{config_file: config_file, repo: repo} = config, opts) do
+    args = ~w(--config-file #{config_file} --repo #{repo}) ++ opts
+    if config[:resource_owner] do
+      args = args ++ ~w(--resource-owner=#{config[:resource_owner]})
+    end
+    Mix.Tasks.ExOauth2Provider.Install.run args
+    config
+  end
 
   ################
   # Web
@@ -312,7 +318,7 @@ config :ex_oauth2_phoenix,
 
     base = opts[:module] || binding[:base]
     opts = Keyword.put(opts, :base, base)
-    repo = (opts[:repo] || "#{base}.Repo")
+    repo = opts[:repo] || "#{base}.Repo"
     config_file = opts[:config_file] || @config_file
 
     binding = Keyword.put binding ,:base, base
@@ -330,6 +336,7 @@ config :ex_oauth2_phoenix,
     |> Map.put(:module, opts[:module])
     |> Map.put(:installed_options, opts[:installed_options])
     |> Map.put(:config_file, config_file)
+    |> Map.put(:resource_owner, opts[:resource_owner])
     |> do_default_config(opts)
   end
 
