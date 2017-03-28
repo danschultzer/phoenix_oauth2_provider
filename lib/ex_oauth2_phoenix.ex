@@ -1,8 +1,12 @@
 defmodule ExOauth2Phoenix do
   @moduledoc """
-  Documentation for ExOauth2Phoenix.
+  A module that provides OAuth 2 based server for Phoenix applications.
+  ## Configuration
+      config :ex_oauth2_phoenix, ExOauth2Phoenix,
+        repo: MyApp.Repo,
+        current_resource_owner: :current_user,
+        router: MyApp.Router.Helper
   """
-
   @module             Module.concat([Mix.Phoenix.base()])
   @config             Application.get_env(:ex_oauth2_phoenix, ExOauth2Phoenix, [])
   @router_helpers     Module.concat([Keyword.get(@config, :router, Module.concat([@module, "Router"])), "Helpers"])
