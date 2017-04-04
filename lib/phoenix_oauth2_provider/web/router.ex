@@ -6,7 +6,7 @@ defmodule PhoenixOauth2Provider.Router do
       defmodule MyProject.Router do
         use MyProject.Web, :router
         use PhoenixOauth2Provider.Router         # Add this
-        scope "/oauth" do
+        scope "/" do
           pipe_through :protected
           oauth_routes()                    # Add this
         end
@@ -19,6 +19,7 @@ defmodule PhoenixOauth2Provider.Router do
 
   alias PhoenixOauth2Provider.AuthorizationController
   alias PhoenixOauth2Provider.ApplicationController
+  alias PhoenixOauth2Provider.TokenController
 
   defmacro __using__(_opts \\ []) do
     quote do
@@ -31,7 +32,7 @@ defmodule PhoenixOauth2Provider.Router do
   Use this macro to define the various PhoenixOauth2Provider Routes.
   ## Examples:
       # Routes requires authentication
-      scope "/oauth" do
+      scope "/" do
         pipe_through :protected
         oauth_routes()
       end
@@ -49,7 +50,7 @@ defmodule PhoenixOauth2Provider.Router do
         end
         resources "/applications", ApplicationController, param: "uid"
         # resources "/authorized_applications", AuthorizedApplicationController, only: [:index, :destroy]
-        # post "/token", TokenController, :create
+        post "/token", TokenController, :create
         # post "/revoke", TokenController, :revoke
         # get "/token/info", TokenInfoController, :show
       end

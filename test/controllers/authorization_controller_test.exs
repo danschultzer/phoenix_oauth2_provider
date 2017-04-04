@@ -28,7 +28,7 @@ defmodule PhoenixOauth2Provider.AuthorizationControllerTest do
 
   test "new/2 renders error with invalid client", %{conn: conn, user: user} do
     conn = get conn, oauth_authorization_path(conn, :new, %{client_id: "", response_type: "code"})
-    assert html_response(conn, 400) =~ "Client authentication failed due to unknown client, no client authentication included, or unsupported authentication method."
+    assert html_response(conn, 422) =~ "Client authentication failed due to unknown client, no client authentication included, or unsupported authentication method."
   end
 
   test "new/2 redirects with error", %{conn: conn, user: user} do
@@ -82,7 +82,7 @@ defmodule PhoenixOauth2Provider.AuthorizationControllerTest do
 
     test "delete/2 shows json", %{conn: conn, application: application} do
       conn = delete conn, oauth_authorization_path(conn, :delete, valid_request(application))
-      body = json_response(conn, 400)
+      body = json_response(conn, 401)
       assert "The resource owner or authorization server denied the request." == body["error_description"]
     end
   end
