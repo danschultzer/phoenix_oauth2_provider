@@ -1,3 +1,3 @@
-defmodule ExOauth2Phoenix.AuthorizationView do
-  use <%= base %>.ExOauth2Phoenix.Web, :view
+defmodule PhoenixOauth2Provider.AuthorizationView do
+  use <%= base %>.PhoenixOauth2Provider.Web, :view
 end

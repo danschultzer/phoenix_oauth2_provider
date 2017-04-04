@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Hello Test ExOauth2Phoenix</title>
+    <title>Hello Test PhoenixOauth2Provider</title>
     <link rel="stylesheet" href="<%%= static_path(@conn, "/css/app.css") %>">
   </head>
 

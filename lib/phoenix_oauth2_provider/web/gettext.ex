@@ -1,4 +1,4 @@
-defmodule ExOauth2Phoenix.Web.Gettext do
+defmodule PhoenixOauth2Provider.Web.Gettext do
   @moduledoc """
   A module providing Internationalization with a gettext-based API.
 
@@ -20,5 +20,5 @@ defmodule ExOauth2Phoenix.Web.Gettext do
 
   See the [Gettext Docs](https://hexdocs.pm/gettext) for detailed usage.
   """
-  use Gettext, otp_app: :ex_oauth2_phoenix
+  use Gettext, otp_app: :phoenix_oauth2_provider
 end

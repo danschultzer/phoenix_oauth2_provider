@@ -1,6 +1,6 @@
-defmodule ExOauth2Phoenix.Test.Router do
+defmodule PhoenixOauth2Provider.Test.Router do
   use Phoenix.Router
-  use ExOauth2Phoenix.Router
+  use PhoenixOauth2Provider.Router
 
   pipeline :browser do
     plug :accepts, ["html"]

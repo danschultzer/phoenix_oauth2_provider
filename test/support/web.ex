@@ -1,4 +1,4 @@
-defmodule ExOauth2Phoenix.Test.ExOauth2Phoenix.Web do
+defmodule PhoenixOauth2Provider.Test.PhoenixOauth2Provider.Web do
   def view do
     quote do
       use Phoenix.View, root: "tmp/templates"
@@ -9,10 +9,10 @@ defmodule ExOauth2Phoenix.Test.ExOauth2Phoenix.Web do
       # Use all HTML functionality (forms, tags, etc)
       use Phoenix.HTML
 
-      import ExOauth2Phoenix.Test.Router.Helpers
+      import PhoenixOauth2Provider.Test.Router.Helpers
 
       # Add view helpers including routes helpers
-      import ExOauth2Phoenix.ViewHelpers
+      import PhoenixOauth2Provider.ViewHelpers
     end
   end
   defmacro __using__(which) when is_atom(which) do

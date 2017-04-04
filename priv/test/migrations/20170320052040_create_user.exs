@@ -1,4 +1,4 @@
-defmodule ExOauth2Provider.Test.Repo.Migrations.CreateUser do
+defmodule PhoenixOauth2Provider.Test.Repo.Migrations.CreateUser do
   use Ecto.Migration
 
   def change do

@@ -1,7 +1,7 @@
-defmodule ExOauth2Phoenix.ApplicationControllerTest do
-  use ExOauth2Phoenix.Test.ConnCase
+defmodule PhoenixOauth2Provider.ApplicationControllerTest do
+  use PhoenixOauth2Provider.Test.ConnCase
 
-  import ExOauth2Phoenix.Test.Fixture
+  import PhoenixOauth2Provider.Test.Fixture
 
   @create_attrs %{name: "Example", redirect_uri: "https://example.com"}
   @update_attrs %{name: "some updated name"}

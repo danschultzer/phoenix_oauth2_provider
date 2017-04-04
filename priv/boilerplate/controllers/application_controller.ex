@@ -1,8 +1,8 @@
-defmodule ExOauth2Phoenix.ApplicationController do
-  use ExOauth2Phoenix.Web, :controller
+defmodule PhoenixOauth2Provider.ApplicationController do
+  use PhoenixOauth2Provider.Web, :controller
 
   alias ExOauth2Provider.OauthApplications
-  import ExOauth2Phoenix
+  import PhoenixOauth2Provider
 
   def index(conn, _params) do
     applications = OauthApplications.list_applications()

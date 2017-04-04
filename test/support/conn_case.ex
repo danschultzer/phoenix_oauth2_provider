@@ -1,4 +1,4 @@
-defmodule ExOauth2Phoenix.Test.ConnCase do
+defmodule PhoenixOauth2Provider.Test.ConnCase do
   @moduledoc """
   This module defines the test case to be used by
   tests that require setting up a connection.
@@ -19,17 +19,17 @@ defmodule ExOauth2Phoenix.Test.ConnCase do
     quote do
       # Import conveniences for testing with connections
       use Phoenix.ConnTest
-      import ExOauth2Phoenix.Test.ErrorView
-      import ExOauth2Phoenix.Test.Router.Helpers
+      import PhoenixOauth2Provider.Test.ErrorView
+      import PhoenixOauth2Provider.Test.Router.Helpers
 
-      @endpoint ExOauth2Phoenix.Test.Endpoint
+      @endpoint PhoenixOauth2Provider.Test.Endpoint
     end
   end
 
 
   setup tags do
     unless tags[:async] do
-      :ok = Ecto.Adapters.SQL.Sandbox.checkout(ExOauth2Phoenix.Test.Repo)
+      :ok = Ecto.Adapters.SQL.Sandbox.checkout(PhoenixOauth2Provider.Test.Repo)
     end
     {:ok, conn: Phoenix.ConnTest.build_conn()}
   end

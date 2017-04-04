@@ -1,13 +1,13 @@
-defmodule ExOauth2Phoenix do
+defmodule PhoenixOauth2Provider do
   @moduledoc """
   A module that provides OAuth 2 based server for Phoenix applications.
   ## Configuration
-      config :ex_oauth2_phoenix, ExOauth2Phoenix,
+      config :phoenix_oauth2_provider, PhoenixOauth2Provider,
         current_resource_owner: :current_user,
         module: MyApp,
         router: MyApp.Router
   """
-  @config             Application.get_env(:ex_oauth2_phoenix, ExOauth2Phoenix, [])
+  @config             Application.get_env(:phoenix_oauth2_provider, PhoenixOauth2Provider, [])
   @module             Keyword.get(@config, :module, Mix.Phoenix.base())
   @router_helpers     Module.concat([Keyword.get(@config, :router, Module.concat([@module, "Router"])), "Helpers"])
   @resource_owner_key Keyword.get(@config, :current_resource_owner, :current_user)

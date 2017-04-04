@@ -1,4 +1,4 @@
-defmodule ExOauth2Phoenix.Mix.Utils do
+defmodule PhoenixOauth2Provider.Mix.Utils do
   @moduledoc """
   Utils helpers for mix tasks.
   """

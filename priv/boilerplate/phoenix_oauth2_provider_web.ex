@@ -1,9 +1,9 @@
-defmodule <%= base %>.ExOauth2Phoenix.Web do
+defmodule <%= base %>.PhoenixOauth2Provider.Web do
   @moduledoc false
 
   def view do
     quote do
-      use Phoenix.View, root: "web/templates/ex_oauth2_phoenix"
+      use Phoenix.View, root: "web/templates/phoenix_oauth2_provider"
 
       # Import convenience functions from controllers
       import Phoenix.Controller, only: [get_csrf_token: 0, get_flash: 2, view_module: 1]
@@ -14,7 +14,7 @@ defmodule <%= base %>.ExOauth2Phoenix.Web do
       import <%= base %>.Router.Helpers
       import <%= base %>.ErrorHelpers
       import <%= base %>.Gettext
-      import <%= base %>.ExOauth2Phoenix.ViewHelpers
+      import <%= base %>.PhoenixOauth2Provider.ViewHelpers
     end
   end
 

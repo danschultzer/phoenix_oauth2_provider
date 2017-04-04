@@ -1,20 +1,20 @@
 use Mix.Config
 
 config :ex_oauth2_provider, ExOauth2Provider,
-  repo: ExOauth2Phoenix.Test.Repo,
-  resource_owner: ExOauth2Phoenix.Test.User,
+  repo: PhoenixOauth2Provider.Test.Repo,
+  resource_owner: PhoenixOauth2Provider.Test.User,
   scopes: ~w(read write)
 
-config :ex_oauth2_phoenix, ExOauth2Phoenix,
-  module: ExOauth2Phoenix.Test,
+config :phoenix_oauth2_provider, PhoenixOauth2Provider,
+  module: PhoenixOauth2Provider.Test,
   current_resource_owner: :current_test_user
 
-config :ex_oauth2_phoenix, ecto_repos: [ExOauth2Phoenix.Test.Repo]
-config :ex_oauth2_phoenix, ExOauth2Phoenix.Test.Repo,
+config :phoenix_oauth2_provider, ecto_repos: [PhoenixOauth2Provider.Test.Repo]
+config :phoenix_oauth2_provider, PhoenixOauth2Provider.Test.Repo,
   adapter: Ecto.Adapters.Postgres,
-  database: "ex_oauth2_phoenix_test",
+  database: "phoenix_oauth2_provider_test",
   pool: Ecto.Adapters.SQL.Sandbox,
   priv: "priv/test"
-config :ex_oauth2_phoenix, ExOauth2Phoenix.Test.Endpoint,
+config :phoenix_oauth2_provider, PhoenixOauth2Provider.Test.Endpoint,
   secret_key_base: "1lJGFCaor+gPGc21GCvn+NE0WDOA5ujAMeZoy7oC5un7NPUXDir8LAE+Iba5bpGH",
-  render_errors: [view: ExOauth2Phoenix.Test.ErrorView, accepts: ~w(html json)]
+  render_errors: [view: PhoenixOauth2Provider.Test.ErrorView, accepts: ~w(html json)]

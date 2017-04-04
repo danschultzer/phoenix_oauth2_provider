@@ -1,10 +1,10 @@
-defmodule ExOauth2Phoenix.Mixfile do
+defmodule PhoenixOauth2Provider.Mixfile do
   use Mix.Project
 
   @version "0.1.0"
 
   def project do
-    [app: :ex_oauth2_phoenix,
+    [app: :phoenix_oauth2_provider,
      version: @version,
      elixir: "~> 1.4",
      elixirc_paths: elixirc_paths(Mix.env),
@@ -18,10 +18,10 @@ defmodule ExOauth2Phoenix.Mixfile do
      package: package(),
 
       # Docs
-      name: "ExOauth2Phoenix",
-      docs: [source_ref: "v#{@version}", main: "ExOauth2Phoenix",
-             canonical: "http://hexdocs.pm/ex_oauth2_phoenix",
-             source_url: "https://github.com/danschultzer/ex_oauth2_phoenix",
+      name: "PhoenixOauth2Provider",
+      docs: [source_ref: "v#{@version}", main: "PhoenixOauth2Provider",
+             canonical: "http://hexdocs.pm/phoenix_oauth2_provider",
+             source_url: "https://github.com/danschultzer/phoenix_oauth2_provider",
              extras: ["README.md"]]
    ]
   end
@@ -38,7 +38,7 @@ defmodule ExOauth2Phoenix.Mixfile do
 
   defp deps do
     [
-      {:ex_oauth2_provider, github: "danschultzer/ex_oauth2_provider"},
+      {:ex_oauth2_provider, github: "danschultzer/ex_oauth2_provider", branch: :master},
       {:gettext, "~> 0.13"},
       {:phoenix, "~> 1.3.0-rc"},
 
@@ -55,7 +55,7 @@ defmodule ExOauth2Phoenix.Mixfile do
     [
       maintainers: ["Dan Shultzer"],
       licenses: ["MIT"],
-      links: %{github: "https://github.com/danschultzer/ex_oauth2_phoenix"},
+      links: %{github: "https://github.com/danschultzer/phoenix_oauth2_provider"},
       files: ~w(lib) ++ ~w(LICENSE mix.exs README.md)
     ]
   end

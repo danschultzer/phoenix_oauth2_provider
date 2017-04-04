@@ -1,3 +1,3 @@
-defmodule ExOauth2Phoenix.LayoutView do
-  use <%= base %>.ExOauth2Phoenix.Web, :view
+defmodule PhoenixOauth2Provider.LayoutView do
+  use <%= base %>.PhoenixOauth2Provider.Web, :view
 end

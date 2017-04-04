@@ -1,8 +1,8 @@
-defmodule ExOauth2Phoenix.AuthorizationController do
-  use ExOauth2Phoenix.Web, :controller
+defmodule PhoenixOauth2Provider.AuthorizationController do
+  use PhoenixOauth2Provider.Web, :controller
 
   alias ExOauth2Provider.Grant.AuthorizationCode
-  import ExOauth2Phoenix
+  import PhoenixOauth2Provider
 
   def new(conn, params) do
     case AuthorizationCode.preauthorize(current_resource_owner(conn), params) do

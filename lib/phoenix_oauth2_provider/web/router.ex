@@ -1,11 +1,11 @@
-defmodule ExOauth2Phoenix.Router do
+defmodule PhoenixOauth2Provider.Router do
   @moduledoc """
-  Handles routing for ExOauth2Phoenix.
+  Handles routing for PhoenixOauth2Provider.
   ## Usage
   Add the following to your `web/router.ex` file
       defmodule MyProject.Router do
         use MyProject.Web, :router
-        use ExOauth2Phoenix.Router         # Add this
+        use PhoenixOauth2Provider.Router         # Add this
         scope "/oauth" do
           pipe_through :protected
           oauth_routes()                    # Add this
@@ -17,8 +17,8 @@ defmodule ExOauth2Phoenix.Router do
   In this case, it will add both the public and protected routes.
   """
 
-  alias ExOauth2Phoenix.AuthorizationController
-  alias ExOauth2Phoenix.ApplicationController
+  alias PhoenixOauth2Provider.AuthorizationController
+  alias PhoenixOauth2Provider.ApplicationController
 
   defmacro __using__(_opts \\ []) do
     quote do
@@ -27,8 +27,8 @@ defmodule ExOauth2Phoenix.Router do
   end
 
   @doc """
-  ExOauth2Phoenix Router macro.
-  Use this macro to define the various ExOauth2Phoenix Routes.
+  PhoenixOauth2Provider Router macro.
+  Use this macro to define the various PhoenixOauth2Provider Routes.
   ## Examples:
       # Routes requires authentication
       scope "/oauth" do

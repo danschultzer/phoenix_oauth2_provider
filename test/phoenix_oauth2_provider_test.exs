@@ -1,7 +1,7 @@
-defmodule ExOauth2PhoenixTest do
-  use ExOauth2Phoenix.Test.ConnCase
+defmodule PhoenixOauth2ProviderTest do
+  use PhoenixOauth2Provider.Test.ConnCase
 
-  import ExOauth2Phoenix
+  import PhoenixOauth2Provider
 
   test "current_resource_owner/1" do
     assert current_resource_owner(%{assigns: %{current_test_user: "user"}}) == "user"

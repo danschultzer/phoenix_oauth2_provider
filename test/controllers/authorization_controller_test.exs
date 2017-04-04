@@ -1,8 +1,8 @@
-defmodule ExOauth2Phoenix.AuthorizationControllerTest do
-  use ExOauth2Phoenix.Test.ConnCase
+defmodule PhoenixOauth2Provider.AuthorizationControllerTest do
+  use PhoenixOauth2Provider.Test.ConnCase
 
   alias ExOauth2Provider.OauthApplications
-  import ExOauth2Phoenix.Test.Fixture
+  import PhoenixOauth2Provider.Test.Fixture
   import Ecto.Query
 
   def valid_request(%OauthApplications.OauthApplication{} = application) do

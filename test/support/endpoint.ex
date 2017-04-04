@@ -1,5 +1,5 @@
-defmodule ExOauth2Phoenix.Test.Endpoint do
-  use Phoenix.Endpoint, otp_app: :ex_oauth2_phoenix
+defmodule PhoenixOauth2Provider.Test.Endpoint do
+  use Phoenix.Endpoint, otp_app: :phoenix_oauth2_provider
 
   # Serve at "/" the static files from "priv/static" directory.
   #
@@ -25,5 +25,5 @@ defmodule ExOauth2Phoenix.Test.Endpoint do
     key: "_binaryid_key",
     signing_salt: "JFbk5iZ6"
 
-  plug ExOauth2Phoenix.Test.Router
+  plug PhoenixOauth2Provider.Test.Router
 end

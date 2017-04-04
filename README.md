@@ -1,18 +1,18 @@
-# ExOauth2Phoenix
+# PhoenixOauth2Provider
 
-[![Build Status](https://travis-ci.org/danschultzer/ex_oauth2_phoenix.svg?branch=master)](https://travis-ci.org/danschultzer/ex_oauth2_phoenix)
+[![Build Status](https://travis-ci.org/danschultzer/phoenix_oauth2_provider.svg?branch=master)](https://travis-ci.org/danschultzer/phoenix_oauth2_provider)
 
 Get an OAuth 2 provider running in your Phoenix app with controllers, views and models in just two minutes.
 
 ## Installation
 
-Add ExOauth2Phoenix to your list of dependencies in `mix.exs`:
+Add PhoenixOauth2Provider to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
   [
     # ...
-    {:ex_oauth2_phoenix, "~> 0.1.0"}
+    {:phoenix_oauth2_provider, "~> 0.1.0"}
     # ...
   ]
 end
@@ -23,7 +23,7 @@ Run `mix deps.get` to install it.
 Add migrations and set up `config/config.exs`:
 
 ```bash
-mix ex_oauth2_phoenix.install
+mix phoenix_oauth2_provider.install
 ```
 
 Set up routes:
@@ -67,10 +67,10 @@ config :ex_oauth2_provider, ExOauth2Provider,
 
 ### Resource owner
 
-Set up what `assigns` in the plug that ExOauth2Phoenix should gather the authorized user from.
+Set up what `assigns` in the plug that PhoenixOauth2Provider should gather the authorized user from.
 
 ```elixir
-config :ex_oauth2_phoenix, ExOauth2Phoenix,
+config :phoenix_oauth2_provider, PhoenixOauth2Provider,
   current_resource_owner: :current_user
 ```
 

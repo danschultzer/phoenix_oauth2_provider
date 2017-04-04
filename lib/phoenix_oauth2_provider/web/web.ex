@@ -1,6 +1,6 @@
-defmodule ExOauth2Phoenix.Web do
+defmodule PhoenixOauth2Provider.Web do
   @moduledoc """
-  ExOauth2Phoenix setting for web resources.
+  PhoenixOauth2Provider setting for web resources.
 
   Similar to a project's Web module
   """
@@ -10,7 +10,7 @@ defmodule ExOauth2Phoenix.Web do
     quote do
       use Phoenix.Controller
 
-      import ExOauth2Phoenix.Web.Gettext
+      import PhoenixOauth2Provider.Web.Gettext
     end
   end
 

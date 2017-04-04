@@ -1,6 +1,6 @@
-defmodule ExOauth2Phoenix.ViewHelpers do
+defmodule PhoenixOauth2Provider.ViewHelpers do
   @moduledoc """
-  Helper functions for ExOauth2Phoenix Views.
+  Helper functions for PhoenixOauth2Provider Views.
   """
   use Phoenix.HTML
 
@@ -25,10 +25,10 @@ defmodule ExOauth2Phoenix.ViewHelpers do
     #
     #     dngettext "errors", "1 file", "%{count} files", count
     #
-    Gettext.dngettext(ExOauth2Phoenix.Web.Gettext, "errors", msg, msg, opts[:count] || 0, opts)
+    Gettext.dngettext(PhoenixOauth2Provider.Web.Gettext, "errors", msg, msg, opts[:count] || 0, opts)
   end
 
   def translate_error(msg) do
-    Gettext.dgettext(ExOauth2Phoenix.Web.Gettext, "errors", msg)
+    Gettext.dgettext(PhoenixOauth2Provider.Web.Gettext, "errors", msg)
   end
 end

@@ -1,6 +1,6 @@
-defmodule ExOauth2Phoenix.Test.Fixture do
-  alias ExOauth2Phoenix.Test.Repo
-  alias ExOauth2Phoenix.Test.User
+defmodule PhoenixOauth2Provider.Test.Fixture do
+  alias PhoenixOauth2Provider.Test.Repo
+  alias PhoenixOauth2Provider.Test.User
   alias ExOauth2Provider.OauthAccessTokens
   alias ExOauth2Provider.OauthApplications
 

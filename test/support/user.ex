@@ -1,4 +1,4 @@
-defmodule ExOauth2Phoenix.Test.User do
+defmodule PhoenixOauth2Provider.Test.User do
   use Ecto.Schema
   import Ecto.Changeset
 
