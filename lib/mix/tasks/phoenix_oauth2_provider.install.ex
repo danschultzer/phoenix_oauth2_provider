@@ -13,7 +13,7 @@ defmodule Mix.Tasks.PhoenixOauth2Provider.Install do
   * Generate appropriate migration files.
   * Generate appropriate view files.
   * Generate appropriate template files.
-  * Generate a `web/phoenix_oauth2_provider_web.ex` file.
+  * Generate a `WEB_PATH/phoenix_oauth2_provider_web.ex` file.
   ## Examples
       mix phoenix_oauth2_provider.install
   ## Option list
@@ -27,8 +27,8 @@ defmodule Mix.Tasks.PhoenixOauth2Provider.Install do
   ## Disable Options
   * `--no-config` -- Don't append to your `config/config.exs` file.
   * `--no-web` -- Don't create the `phoenix_oauth2_provider_web.ex` file.
-  * `--no-views` -- Don't create the `web/views/phoenix_oauth2_provider/` files.
-  * `--no-templates` -- Don't create the `web/templates/phoenix_oauth2_provider` files.
+  * `--no-views` -- Don't create the `WEB_PATH/views/phoenix_oauth2_provider/` files.
+  * `--no-templates` -- Don't create the `WEB_PATH/templates/phoenix_oauth2_provider` files.
   * `--no-boilerplate` -- Don't create any of the boilerplate files.
   * `--no-provider` -- Don't run ex_oauth2_provider install script.
   """
@@ -152,7 +152,7 @@ config :phoenix_oauth2_provider, PhoenixOauth2Provider,
   defp gen_phoenix_oauth2_provider_web(%{web: true, boilerplate: true, binding: binding} = config) do
     Mix.Phoenix.copy_from paths(),
       "priv/boilerplate", "", binding, [
-        {:eex, "phoenix_oauth2_provider_web.ex", "web/phoenix_oauth2_provider_web.ex"},
+        {:eex, "phoenix_oauth2_provider_web.ex", web_path("phoenix_oauth2_provider_web.ex")},
       ]
     config
   end
@@ -175,7 +175,7 @@ config :phoenix_oauth2_provider, PhoenixOauth2Provider,
   def gen_phoenix_oauth2_provider_views(%{views: true, boilerplate: true, binding: binding} = config) do
     files = @view_files
     |> Enum.filter_map(&(validate_option(config, elem(&1,0))), &(elem(&1, 1)))
-    |> Enum.map(&({:eex, &1, "web/views/phoenix_oauth2_provider/#{&1}"}))
+    |> Enum.map(&({:eex, &1, web_path("views/phoenix_oauth2_provider/#{&1}")}))
 
     Mix.Phoenix.copy_from paths(), "priv/boilerplate/views", "", binding, files
     config
@@ -209,7 +209,7 @@ config :phoenix_oauth2_provider, PhoenixOauth2Provider,
   defp copy_templates(binding, name, file_list) do
     files = for fname <- file_list do
       fname = "#{fname}.html.eex"
-      {:eex, fname, "web/templates/phoenix_oauth2_provider/#{name}/#{fname}"}
+      {:eex, fname, web_path("templates/phoenix_oauth2_provider/#{name}/#{fname}")}
     end
 
     Mix.Phoenix.copy_from paths(),
@@ -231,7 +231,7 @@ config :phoenix_oauth2_provider, PhoenixOauth2Provider,
   defp gen_phoenix_oauth2_provider_controllers(%{controllers: true, boilerplate: true, binding: binding, base: base} = config) do
     files = @controller_files
     |> Enum.filter_map(&(validate_option(config, elem(&1,0))), &(elem(&1, 1)))
-    |> Enum.map(&({:eex, &1, "web/controllers/phoenix_oauth2_provider/#{&1}"}))
+    |> Enum.map(&({:eex, &1, web_path("controllers/phoenix_oauth2_provider/#{&1}")}))
 
     Mix.Phoenix.copy_from paths(),
       "priv/boilerplate/controllers", "", binding, files
@@ -388,5 +388,9 @@ config :phoenix_oauth2_provider, PhoenixOauth2Provider,
     |> Atom.to_string
     |> String.replace("_", "-")
     ["--" <> str | acc]
+  end
+
+  defp web_path(path) do
+    Path.join(Mix.Phoenix.web_prefix(), path)
   end
 end

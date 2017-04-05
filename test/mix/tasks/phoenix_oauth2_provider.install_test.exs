@@ -18,6 +18,7 @@ defmodule Mix.Tasks.PhoenixOauth2Provider.InstallTest do
     :ok
   end
 
+  @web_path "lib/phoenix_oauth2_provider/web"
   @all_template_dirs ~w(layout application authorization authorized_application)
   @all_views ~w(phoenix_oauth2_provider_view_helpers.ex phoenix_oauth2_provider_view.ex layout_view.ex) ++
     ~w(application_view.ex authorization_view.ex authorized_application_view.ex)
@@ -29,15 +30,15 @@ defmodule Mix.Tasks.PhoenixOauth2Provider.InstallTest do
       |> Mix.Tasks.PhoenixOauth2Provider.Install.run
 
       ~w(application_view.ex authorization_view.ex authorized_application_view.ex phoenix_oauth2_provider_view.ex layout_view.ex phoenix_oauth2_provider_view_helpers.ex)
-      |> assert_file_list(@all_views, "web/views/phoenix_oauth2_provider/")
+      |> assert_file_list(@all_views, web_path("views/phoenix_oauth2_provider/"))
 
       ~w(layout application authorization authorized_application)
-      |> assert_dirs(@all_template_dirs, "web/templates/phoenix_oauth2_provider/")
+      |> assert_dirs(@all_template_dirs, web_path("templates/phoenix_oauth2_provider/"))
 
       ~w(application_controller.ex authorization_controller.ex authorized_application_controller.ex token_controller.ex)
-      |> assert_file_list(@all_controllers, "web/controllers/phoenix_oauth2_provider/")
+      |> assert_file_list(@all_controllers, web_path("controllers/phoenix_oauth2_provider/"))
 
-      assert_file "web/controllers/phoenix_oauth2_provider/application_controller.ex", fn file ->
+      assert_file web_path("controllers/phoenix_oauth2_provider/application_controller.ex"), fn file ->
         assert file =~ "defmodule PhoenixOauth2Provider.Test.PhoenixOauth2Provider.ApplicationController do"
       end
     end
@@ -49,13 +50,13 @@ defmodule Mix.Tasks.PhoenixOauth2Provider.InstallTest do
       |> Mix.Tasks.PhoenixOauth2Provider.Install.run
 
       ~w()
-      |> assert_file_list(@all_views, "web/views/phoenix_oauth2_provider/")
+      |> assert_file_list(@all_views, web_path("views/phoenix_oauth2_provider/"))
 
       ~w()
-      |> assert_dirs(@all_template_dirs, "web/templates/phoenix_oauth2_provider/")
+      |> assert_dirs(@all_template_dirs, web_path("templates/phoenix_oauth2_provider/"))
 
       ~w()
-      |> assert_file_list(@all_controllers, "web/controllers/phoenix_oauth2_provider/")
+      |> assert_file_list(@all_controllers, web_path("controllers/phoenix_oauth2_provider/"))
     end
   end
 
@@ -111,19 +112,23 @@ defmodule Mix.Tasks.PhoenixOauth2Provider.InstallTest do
 
   def assert_dirs(dirs, full_dirs, path) do
     Enum.each dirs, fn dir ->
-      assert File.dir? path <> dir
+      assert File.dir? Path.join(path, dir)
     end
     Enum.each full_dirs -- dirs, fn dir ->
-      refute File.dir? path <> dir
+      refute File.dir? Path.join(path, dir)
     end
   end
 
   def assert_file_list(files, full_files, path) do
     Enum.each files, fn file ->
-      assert_file path <> file
+      assert_file Path.join(path, file)
     end
     Enum.each full_files -- files, fn file ->
-      refute_file path <> file
+      refute_file Path.join(path, file)
     end
+  end
+
+  def web_path(path) do
+    Path.join @web_path, path
   end
 end
