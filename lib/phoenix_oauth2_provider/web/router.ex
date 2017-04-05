@@ -20,6 +20,7 @@ defmodule PhoenixOauth2Provider.Router do
   alias PhoenixOauth2Provider.AuthorizationController
   alias PhoenixOauth2Provider.ApplicationController
   alias PhoenixOauth2Provider.TokenController
+  alias PhoenixOauth2Provider.AuthorizedApplicationController
 
   defmacro __using__(_opts \\ []) do
     quote do
@@ -49,7 +50,7 @@ defmodule PhoenixOauth2Provider.Router do
           delete "/", AuthorizationController, :delete
         end
         resources "/applications", ApplicationController, param: "uid"
-        # resources "/authorized_applications", AuthorizedApplicationController, only: [:index, :destroy]
+        resources "/authorized_applications", AuthorizedApplicationController, only: [:index, :delete], param: "uid"
         post "/token", TokenController, :create
         # post "/revoke", TokenController, :revoke
         # get "/token/info", TokenInfoController, :show

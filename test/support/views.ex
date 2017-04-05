@@ -10,6 +10,9 @@ end
 defmodule PhoenixOauth2Provider.AuthorizationView do
   use PhoenixOauth2Provider.Test.PhoenixOauth2Provider.Web, :view
 end
+defmodule PhoenixOauth2Provider.AuthorizedApplicationView do
+  use PhoenixOauth2Provider.Test.PhoenixOauth2Provider.Web, :view
+end
 defmodule PhoenixOauth2Provider.Test.ErrorView do
   def render("500.html", _changeset), do: "500.html"
   def render("400.html", _changeset), do: "400.html"

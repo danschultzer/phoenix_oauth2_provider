@@ -2,7 +2,6 @@ defmodule PhoenixOauth2Provider.TokenController do
   use PhoenixOauth2Provider.Web, :controller
 
   alias ExOauth2Provider.Authorization.Grant
-  import PhoenixOauth2Provider
 
   def create(conn, params) do
     case Grant.authorize(params) do

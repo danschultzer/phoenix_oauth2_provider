@@ -11,7 +11,7 @@ defmodule PhoenixOauth2Provider.TokenControllerTest do
       redirect_uri: app_redirect_uri,
       code: access_grant_token}
   end
-  def valid_request(%{uid: app_uid, secret: app_secret, redirect_uri: app_redirect_uri}) do
+  def valid_request(%{uid: app_uid, secret: app_secret}) do
     %{client_id: app_uid,
       client_secret: app_secret,
       grant_type: "client_credentials"}

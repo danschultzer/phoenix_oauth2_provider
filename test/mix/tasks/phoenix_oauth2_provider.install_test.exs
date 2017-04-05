@@ -18,9 +18,9 @@ defmodule Mix.Tasks.PhoenixOauth2Provider.InstallTest do
     :ok
   end
 
-  @all_template_dirs ~w(layout application)
-  @all_views ~w(phoenix_oauth2_provider_view_helpers.ex phoenix_oauth2_provider_view.ex application_view.ex) ++
-    ~w(layout_view.ex)
+  @all_template_dirs ~w(layout application authorization authorized_application)
+  @all_views ~w(phoenix_oauth2_provider_view_helpers.ex phoenix_oauth2_provider_view.ex layout_view.ex) ++
+    ~w(application_view.ex authorization_view.ex authorized_application_view.ex)
   @all_controllers Enum.map(@all_template_dirs -- ~w(layout), &("#{&1}_controller.ex"))
 
   test "generates files for application" do
@@ -28,13 +28,13 @@ defmodule Mix.Tasks.PhoenixOauth2Provider.InstallTest do
       ~w(--repo PhoenixOauth2Provider.Test.Repo --log-only --controllers --module PhoenixOauth2Provider.Test --no-provider)
       |> Mix.Tasks.PhoenixOauth2Provider.Install.run
 
-      ~w(application_view.ex phoenix_oauth2_provider_view.ex layout_view.ex phoenix_oauth2_provider_view_helpers.ex)
+      ~w(application_view.ex authorization_view.ex authorized_application_view.ex phoenix_oauth2_provider_view.ex layout_view.ex phoenix_oauth2_provider_view_helpers.ex)
       |> assert_file_list(@all_views, "web/views/phoenix_oauth2_provider/")
 
-      ~w(layout application)
+      ~w(layout application authorization authorized_application)
       |> assert_dirs(@all_template_dirs, "web/templates/phoenix_oauth2_provider/")
 
-      ~w(application_controller.ex)
+      ~w(application_controller.ex authorization_controller.ex authorized_application_controller.ex token_controller.ex)
       |> assert_file_list(@all_controllers, "web/controllers/phoenix_oauth2_provider/")
 
       assert_file "web/controllers/phoenix_oauth2_provider/application_controller.ex", fn file ->

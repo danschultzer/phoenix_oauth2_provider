@@ -3,6 +3,7 @@ ExUnit.start()
 Code.require_file "../priv/boilerplate/controllers/application_controller.ex", __DIR__
 Code.require_file "../priv/boilerplate/controllers/authorization_controller.ex", __DIR__
 Code.require_file "../priv/boilerplate/controllers/token_controller.ex", __DIR__
+Code.require_file "../priv/boilerplate/controllers/authorized_application_controller.ex", __DIR__
 
 Mix.Task.run "ex_oauth2_provider.install", ~w(--config-file=config/test.exs)
 Mix.Task.run "ecto.create", ~w(--quiet)
@@ -13,6 +14,7 @@ PhoenixOauth2Provider.Mix.Utils.rm_dir! "tmp"
 for {name, files} <- [
   application: ~w(edit new form index show),
   authorization: ~w(error new show),
+  authorized_application: ~w(index),
   layout: ~w(app)
 ] do
   files = for fname <- files do

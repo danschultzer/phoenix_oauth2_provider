@@ -26,7 +26,7 @@ defmodule PhoenixOauth2Provider.AuthorizationControllerTest do
     assert html_response(conn, 200) =~ "Authorize <strong>Example</strong> to use your account?"
   end
 
-  test "new/2 renders error with invalid client", %{conn: conn, user: user} do
+  test "new/2 renders error with invalid client", %{conn: conn} do
     conn = get conn, oauth_authorization_path(conn, :new, %{client_id: "", response_type: "code"})
     assert html_response(conn, 422) =~ "Client authentication failed due to unknown client, no client authentication included, or unsupported authentication method."
   end

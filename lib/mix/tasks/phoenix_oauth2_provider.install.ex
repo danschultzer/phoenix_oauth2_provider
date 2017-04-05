@@ -33,10 +33,10 @@ defmodule Mix.Tasks.PhoenixOauth2Provider.Install do
   * `--no-provider` -- Don't run ex_oauth2_provider install script.
   """
 
-  @all_options       ~w(application authorization)
+  @all_options       ~w(application authorization authorized_application token)
   @all_options_atoms Enum.map(@all_options, &(String.to_atom(&1)))
-  @default_options   ~w(application authorization)
-  @full_options      @all_options -- ~w(application authorization)
+  @default_options   ~w(application authorization authorized_application token)
+  @full_options      @all_options -- ~w(application authorization authorized_application token)
 
   # the options that default to true, and can be disabled with --no-option
   @default_booleans  ~w(config web views templates boilerplate provider migrations)
@@ -166,7 +166,8 @@ config :phoenix_oauth2_provider, PhoenixOauth2Provider,
     all: "layout_view.ex",
     all: "phoenix_oauth2_provider_view_helpers.ex",
     application: "application_view.ex",
-    authorization: "authorization_view.ex"
+    authorization: "authorization_view.ex",
+    authorized_application: "authorized_application_view.ex"
   ]
 
   def view_files, do: @view_files
@@ -184,6 +185,7 @@ config :phoenix_oauth2_provider, PhoenixOauth2Provider,
   @template_files [
     application: {:application, ~w(edit new form index show)},
     authorization: {:authorization, ~w(error new show)},
+    authorized_application: {:authorized_application, ~w(index)},
     layout: {:all, ~w(app)}
   ]
   def template_files, do: @template_files
@@ -219,7 +221,10 @@ config :phoenix_oauth2_provider, PhoenixOauth2Provider,
 
   @controller_files [
     application: "application_controller.ex",
-    authorization: "authorization_controller.ex"
+    authorization: "authorization_controller.ex",
+    token: "token_controller.ex",
+    authorized_application: "authorized_application_controller.ex"
+
   ]
   def controller_files, do: @controller_files
 
