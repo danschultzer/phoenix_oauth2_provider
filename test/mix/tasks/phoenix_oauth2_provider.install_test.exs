@@ -25,7 +25,7 @@ defmodule Mix.Tasks.PhoenixOauth2Provider.InstallTest do
   @all_controllers Enum.map(@all_template_dirs -- ~w(layout), &("#{&1}_controller.ex"))
 
   test "generates files for application" do
-    in_tmp "generates_views_for_application", fn ->
+    in_tmp "generates_files_for_application", fn ->
       ~w(--repo PhoenixOauth2Provider.Test.Repo --log-only --controllers --module PhoenixOauth2Provider.Test --no-provider)
       |> Mix.Tasks.PhoenixOauth2Provider.Install.run
 

@@ -1,10 +1,5 @@
 ExUnit.start()
 
-Code.require_file "../priv/boilerplate/controllers/application_controller.ex", __DIR__
-Code.require_file "../priv/boilerplate/controllers/authorization_controller.ex", __DIR__
-Code.require_file "../priv/boilerplate/controllers/token_controller.ex", __DIR__
-Code.require_file "../priv/boilerplate/controllers/authorized_application_controller.ex", __DIR__
-
 Mix.Task.run "ex_oauth2_provider.install", ~w(--config-file=config/test.exs)
 Mix.Task.run "ecto.create", ~w(--quiet)
 Mix.Task.run "ecto.migrate", ~w(--quiet)

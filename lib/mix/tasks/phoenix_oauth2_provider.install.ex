@@ -231,10 +231,11 @@ config :phoenix_oauth2_provider, PhoenixOauth2Provider,
   defp gen_phoenix_oauth2_provider_controllers(%{controllers: true, boilerplate: true, binding: binding, base: base} = config) do
     files = @controller_files
     |> Enum.filter_map(&(validate_option(config, elem(&1,0))), &(elem(&1, 1)))
-    |> Enum.map(&({:eex, &1, web_path("controllers/phoenix_oauth2_provider/#{&1}")}))
+    |> Enum.map(&({:text, &1, web_path("controllers/phoenix_oauth2_provider/#{&1}")}))
 
+    # Mix.Phoenix.copy_from paths(), "priv/boilerplate/views", "", binding, files
     Mix.Phoenix.copy_from paths(),
-      "priv/boilerplate/controllers", "", binding, files
+      "priv/../lib/phoenix_oauth2_provider/web/controllers", "", binding, files
 
     files
     |> Enum.map(fn({_, _, f}) -> {f, File.read!(f)} end)
@@ -391,6 +392,13 @@ config :phoenix_oauth2_provider, PhoenixOauth2Provider,
   end
 
   defp web_path(path) do
-    Path.join(Mix.Phoenix.web_prefix(), path)
+
+    web_prefix = case :erlang.function_exported(Mix.Phoenix, :web_path, 2) do
+      # Above 1.3.0.rc otp_app is passed as a symbol
+      true -> Mix.Phoenix.otp_app() |> Mix.Phoenix.web_path()
+      _ -> Mix.Phoenix.web_path("")
+    end
+
+    Path.join(web_prefix, path)
   end
 end
