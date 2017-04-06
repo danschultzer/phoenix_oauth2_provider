@@ -57,12 +57,12 @@ oauth_authorize_path  DELETE /oauth/authorize
 
 ### Resource owner schema
 
-You'll need to add a resource owner schema.
+By default `MyApp.User` is used as the `resource_owner`, you can change that in the following way:
 
 ```elixir
-config :ex_oauth2_provider, ExOauth2Provider,
+config :phoenix_oauth2_provider, PhoenixOauth2Provider,
   repo: MyApp.Repo,
-  resource_owner_model: MyApp.User
+  resource_owner: MyApp.CustomUser
 ```
 
 ### Resource owner

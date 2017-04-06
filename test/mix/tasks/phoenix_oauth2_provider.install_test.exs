@@ -82,21 +82,6 @@ defmodule Mix.Tasks.PhoenixOauth2Provider.InstallTest do
 
       assert [_] = Path.wildcard("tmp/migrations/*_create_oauth_tables.exs")
     end
-
-    test "updates config" do
-      in_tmp "installs_ex_oauth2_provider_config", fn ->
-        file_path = "config.exs"
-        File.touch! file_path
-        ~w(--repo PhoenixOauth2Provider.Test.Repo --no-boilerplate --no-migrations --config-file #{File.cwd!}/#{file_path} --resource-owner MyApp.CustomUser)
-        |> Mix.Tasks.PhoenixOauth2Provider.Install.run
-
-        assert_file file_path, fn file ->
-          assert file =~ "config :ex_oauth2_provider, ExOauth2Provider"
-          assert file =~ "repo: Elixir.PhoenixOauth2Provider.Test.Repo"
-          assert file =~ "resource_owner: MyApp.CustomUser"
-        end
-      end
-    end
   end
 
   describe "installed options" do

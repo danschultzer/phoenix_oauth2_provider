@@ -1,13 +1,11 @@
 use Mix.Config
 
-config :ex_oauth2_provider, ExOauth2Provider,
+config :phoenix_oauth2_provider, PhoenixOauth2Provider,
+  module: PhoenixOauth2Provider.Test,
+  current_resource_owner: :current_test_user,
   repo: PhoenixOauth2Provider.Test.Repo,
   resource_owner: PhoenixOauth2Provider.Test.User,
   scopes: ~w(read write)
-
-config :phoenix_oauth2_provider, PhoenixOauth2Provider,
-  module: PhoenixOauth2Provider.Test,
-  current_resource_owner: :current_test_user
 
 config :phoenix_oauth2_provider, ecto_repos: [PhoenixOauth2Provider.Test.Repo]
 config :phoenix_oauth2_provider, PhoenixOauth2Provider.Test.Repo,

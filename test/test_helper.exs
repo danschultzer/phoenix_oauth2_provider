@@ -1,6 +1,6 @@
 ExUnit.start()
 
-Mix.Task.run "ex_oauth2_provider.install", ~w(--config-file=config/test.exs)
+Mix.Task.run "ex_oauth2_provider.install", ~w(--no-config)
 Mix.Task.run "ecto.create", ~w(--quiet)
 Mix.Task.run "ecto.migrate", ~w(--quiet)
 
