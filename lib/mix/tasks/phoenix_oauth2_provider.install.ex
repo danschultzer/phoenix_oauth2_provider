@@ -328,6 +328,7 @@ config :phoenix_oauth2_provider, PhoenixOauth2Provider,
     config_file = opts[:config_file] || @config_file
 
     binding = Keyword.put binding ,:base, base
+    binding = Keyword.put binding ,:web_prefix, web_path("")
 
     bin_opts
     |> Enum.map(&({&1, true}))
