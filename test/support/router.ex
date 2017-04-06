@@ -11,7 +11,11 @@ defmodule PhoenixOauth2Provider.Test.Router do
   end
 
   scope "/" do
+    oauth_routes :public
+  end
+
+  scope "/" do
     pipe_through :browser
-    oauth_routes()
+    oauth_routes :protected
   end
 end

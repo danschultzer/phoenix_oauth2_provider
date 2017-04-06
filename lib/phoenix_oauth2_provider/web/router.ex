@@ -32,28 +32,40 @@ defmodule PhoenixOauth2Provider.Router do
   PhoenixOauth2Provider Router macro.
   Use this macro to define the various PhoenixOauth2Provider Routes.
   ## Examples:
+      # Routes that are open with no CSRF protection
+      scope "/" do
+        pipe_through :public
+        oauth_routes :public
+      end
+
       # Routes requires authentication
       scope "/" do
         pipe_through :protected
-        oauth_routes()
+        oauth_routes :protected
       end
   """
-  defmacro oauth_routes() do
+  defmacro oauth_routes(mode, options \\ %{}) do
     quote location: :keep do
-      options = %{scope: "oauth"}
+      mode = unquote(mode)
+      options = Map.merge(%{scope: "oauth"}, unquote(Macro.escape(options)))
 
       scope "/#{options[:scope]}", as: "oauth" do
-        scope "/authorize" do
-          get "/", AuthorizationController, :new
-          post "/", AuthorizationController, :create
-          get "/:code", AuthorizationController, :show
-          delete "/", AuthorizationController, :delete
+        if mode == :protected do
+          scope "/authorize" do
+            get "/", AuthorizationController, :new
+            post "/", AuthorizationController, :create
+            get "/:code", AuthorizationController, :show
+            delete "/", AuthorizationController, :delete
+          end
+          resources "/applications", ApplicationController, param: "uid"
+          resources "/authorized_applications", AuthorizedApplicationController, only: [:index, :delete], param: "uid"
         end
-        resources "/applications", ApplicationController, param: "uid"
-        resources "/authorized_applications", AuthorizedApplicationController, only: [:index, :delete], param: "uid"
-        post "/token", TokenController, :create
-        # post "/revoke", TokenController, :revoke
-        # get "/token/info", TokenInfoController, :show
+
+        if mode == :public do
+          post "/token", TokenController, :create
+          # post "/revoke", TokenController, :revoke
+          # get "/token/info", TokenInfoController, :show
+        end
       end
     end
   end

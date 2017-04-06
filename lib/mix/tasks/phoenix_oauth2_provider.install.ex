@@ -256,16 +256,25 @@ config :phoenix_oauth2_provider, PhoenixOauth2Provider,
     defmodule #{base}.Router do
       use #{base}.Web, :router
       use PhoenixOauth2Provider.Router # Add this
+
       pipeline :browser do
         ...
       end
       pipeline :protected do
         ...
       end
-      # Add this block
+
+      # Add these blocks
+      pipeline :oauth_public do
+        plug :put_secure_browser_headers
+      end
+      scope "/" do
+        pipe_through :oauth_public
+        oauth_routes :public
+      end
       scope "/"#{namespace} do
         pipe_through :protected
-        oauth_routes
+        oauth_routes :protected
       end
       ...
     end
