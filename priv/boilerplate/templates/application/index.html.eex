@@ -13,7 +13,7 @@
   <tbody>
 <%%= for application <- @applications do %>
     <tr>
-      <td><%%= application.name %></td>
+      <td><%%= link application.name, to: oauth_application_path(@conn, :show, application) %></td>
       <td><%%= application.redirect_uri %></td>
 
       <td class="text-right">
