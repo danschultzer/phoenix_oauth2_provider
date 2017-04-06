@@ -11,6 +11,7 @@ defmodule PhoenixOauth2Provider.Mixfile do
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      compilers: [:phoenix] ++ Mix.compilers,
+     preferred_cli_env: [credo: :test],
      deps: deps(),
 
      # Hex
