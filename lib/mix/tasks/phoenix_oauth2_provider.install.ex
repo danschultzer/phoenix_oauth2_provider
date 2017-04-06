@@ -9,7 +9,6 @@ defmodule Mix.Tasks.PhoenixOauth2Provider.Install do
   Configure PhoenixOauth2Provider for your Phoenix application.
   This installer will normally do the following unless given an option not to do so:
   * Append the :phoenix_oauth2_provider configuration to your `config/config.exs` file.
-  * Append the :ex_oauth2_provider configuration to your `config/config.exs` file.
   * Generate appropriate migration files.
   * Generate appropriate view files.
   * Generate appropriate template files.
