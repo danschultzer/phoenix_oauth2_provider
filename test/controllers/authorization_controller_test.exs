@@ -9,9 +9,13 @@ defmodule PhoenixOauth2Provider.AuthorizationControllerTest do
     %{client_id: application.uid, response_type: "code"}
   end
 
-  def last_grant_token do
+  def last_grant do
     ExOauth2Provider.repo.one(from x in ExOauth2Provider.OauthAccessGrants.OauthAccessGrant,
-      order_by: [desc: x.id], limit: 1).token
+      order_by: [desc: x.id], limit: 1)
+  end
+
+  def last_grant_token do
+    last_grant().token
   end
 
   setup %{conn: conn} do
@@ -22,8 +26,17 @@ defmodule PhoenixOauth2Provider.AuthorizationControllerTest do
 
   test "new/2 renders authorization form", %{conn: conn, user: user} do
     application = fixture(:application, %{user: user})
+
     conn = get conn, oauth_authorization_path(conn, :new, valid_request(application))
-    assert html_response(conn, 200) =~ "Authorize <strong>Example</strong> to use your account?"
+    assert body = html_response(conn, 200)
+
+    assert body =~ "Authorize <strong>#{application.name}</strong> to use your account?"
+    assert body =~ application.name
+    application.scopes
+    |> ExOauth2Provider.Scopes.to_list
+    |> Enum.each(fn(scope) ->
+      assert body =~ "<li>#{scope}</li>"
+    end)
   end
 
   test "new/2 renders error with invalid client", %{conn: conn} do
@@ -49,6 +62,8 @@ defmodule PhoenixOauth2Provider.AuthorizationControllerTest do
     application = fixture(:application, %{user: user})
     conn = post conn, oauth_authorization_path(conn, :create, valid_request(application))
     assert redirected_to(conn) == "https://example.com?code=#{last_grant_token()}"
+
+    assert last_grant().resource_owner_id == user.id
   end
 
   test "delete/2 redirects", %{conn: conn, user: user} do

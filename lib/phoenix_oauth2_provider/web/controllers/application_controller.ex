@@ -5,7 +5,7 @@ defmodule PhoenixOauth2Provider.ApplicationController do
   import PhoenixOauth2Provider
 
   def index(conn, _params) do
-    applications = OauthApplications.list_applications()
+    applications = OauthApplications.list_applications_for(current_resource_owner(conn))
     render(conn, "index.html", applications: applications)
   end
 
@@ -14,7 +14,7 @@ defmodule PhoenixOauth2Provider.ApplicationController do
     render(conn, "new.html", changeset: changeset)
   end
 
-  def create(conn, %{"application" => application_params}) do
+  def create(conn, %{"oauth_application" => application_params}) do
     case OauthApplications.create_application(current_resource_owner(conn), application_params) do
       {:ok, application} ->
         conn
@@ -26,18 +26,18 @@ defmodule PhoenixOauth2Provider.ApplicationController do
   end
 
   def show(conn, %{"uid" => uid}) do
-    application = OauthApplications.get_application!(uid)
+    application = get_application_for!(conn, uid)
     render(conn, "show.html", application: application)
   end
 
   def edit(conn, %{"uid" => uid}) do
-    application = OauthApplications.get_application!(uid)
+    application = get_application_for!(conn, uid)
     changeset = OauthApplications.change_application(application)
     render(conn, "edit.html", application: application, changeset: changeset)
   end
 
-  def update(conn, %{"uid" => uid, "application" => application_params}) do
-    application = OauthApplications.get_application!(uid)
+  def update(conn, %{"uid" => uid, "oauth_application" => application_params}) do
+    application = get_application_for!(conn, uid)
 
     case OauthApplications.update_application(application, application_params) do
       {:ok, application} ->
@@ -50,11 +50,15 @@ defmodule PhoenixOauth2Provider.ApplicationController do
   end
 
   def delete(conn, %{"uid" => uid}) do
-    application = OauthApplications.get_application!(uid)
+    application = get_application_for!(conn, uid)
     {:ok, _application} = OauthApplications.delete_application(application)
 
     conn
     |> put_flash(:info, "Application deleted successfully.")
     |> redirect(to: router_helpers().oauth_application_path(conn, :index))
+  end
+
+  defp get_application_for!(conn, uid) do
+    OauthApplications.get_application_for!(current_resource_owner(conn), uid)
   end
 end

@@ -20,12 +20,16 @@ defmodule PhoenixOauth2Provider.AuthorizationController do
   end
 
   def create(conn, params) do
-    Request.authorize(current_resource_owner(conn), params)
+    conn
+    |> current_resource_owner
+    |> Request.authorize(params)
     |> redirect_or_render(conn)
   end
 
   def delete(conn, params) do
-    Request.deny(current_resource_owner(conn), params)
+    conn
+    |> current_resource_owner
+    |> Request.deny(params)
     |> redirect_or_render(conn)
   end
 
