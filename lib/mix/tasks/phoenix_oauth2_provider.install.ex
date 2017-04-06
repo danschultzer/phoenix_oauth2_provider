@@ -84,7 +84,9 @@ defmodule Mix.Tasks.PhoenixOauth2Provider.Install do
     """
 config :phoenix_oauth2_provider, PhoenixOauth2Provider,
   module: #{config[:base]},
-  current_resource_owner: :current_user\n
+  current_resource_owner: :current_user,
+  repo: #{config[:repo]},
+  resource_owner: #{config[:resource_owner]}\n
 """
     |> write_config(config)
     |> log_config
@@ -129,10 +131,7 @@ config :phoenix_oauth2_provider, PhoenixOauth2Provider,
   ##################
   # ExOauth2Provider
 
-  defp install_ex_oauth2_provider(%{provider: true, config: true, config_file: config_file, repo: repo} = config) do
-    install_ex_oauth2_provider_task(config, ~w())
-  end
-  defp install_ex_oauth2_provider(%{provider: true, config: false, config_file: config_file, repo: repo} = config) do
+  defp install_ex_oauth2_provider(%{provider: true, repo: repo} = config) do
     install_ex_oauth2_provider_task(config, ~w(--no-config))
   end
   defp install_ex_oauth2_provider(config), do: config
@@ -333,6 +332,7 @@ config :phoenix_oauth2_provider, PhoenixOauth2Provider,
     base = opts[:module] || binding[:base]
     opts = Keyword.put(opts, :base, base)
     repo = opts[:repo] || "#{base}.Repo"
+    resource_owner = opts[:resource_owner] || "#{base}.User"
     config_file = opts[:config_file] || @config_file
 
     binding = Keyword.put binding ,:base, base
@@ -351,7 +351,7 @@ config :phoenix_oauth2_provider, PhoenixOauth2Provider,
     |> Map.put(:module, opts[:module])
     |> Map.put(:installed_options, opts[:installed_options])
     |> Map.put(:config_file, config_file)
-    |> Map.put(:resource_owner, opts[:resource_owner])
+    |> Map.put(:resource_owner, resource_owner)
     |> do_default_config(opts)
   end
 

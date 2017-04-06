@@ -71,6 +71,11 @@ defmodule Mix.Tasks.PhoenixOauth2Provider.InstallTest do
         assert file =~ "config :phoenix_oauth2_provider, PhoenixOauth2Provider"
         assert file =~ "module: PhoenixOauth2Provider"
         assert file =~ "current_resource_owner: :current_user"
+        assert file =~ "repo: PhoenixOauth2Provider.Test.Repo"
+        assert file =~ "resource_owner: PhoenixOauth2Provider.User"
+
+        # Doesn't set config for provider
+        refute file =~ "config :ex_oauth2_provider"
       end
     end
   end
