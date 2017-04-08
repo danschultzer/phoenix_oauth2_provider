@@ -1,11 +1,11 @@
 defmodule PhoenixOauth2Provider.AuthorizationController do
   use PhoenixOauth2Provider.Web, :controller
 
-  alias ExOauth2Provider.Authorization.Request
+  alias ExOauth2Provider.Authorization
   import PhoenixOauth2Provider
 
   def new(conn, params) do
-    case Request.preauthorize(current_resource_owner(conn), params) do
+    case Authorization.preauthorize(current_resource_owner(conn), params) do
       {:ok, client, scopes} ->
         render(conn, "new.html", params: params, client: client, scopes: scopes)
       {:native_redirect, %{code: code}} ->
@@ -22,14 +22,14 @@ defmodule PhoenixOauth2Provider.AuthorizationController do
   def create(conn, params) do
     conn
     |> current_resource_owner
-    |> Request.authorize(params)
+    |> Authorization.authorize(params)
     |> redirect_or_render(conn)
   end
 
   def delete(conn, params) do
     conn
     |> current_resource_owner
-    |> Request.deny(params)
+    |> Authorization.deny(params)
     |> redirect_or_render(conn)
   end
 

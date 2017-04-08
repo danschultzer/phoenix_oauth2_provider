@@ -1,10 +1,10 @@
 defmodule PhoenixOauth2Provider.TokenController do
   use PhoenixOauth2Provider.Web, :controller
 
-  alias ExOauth2Provider.Authorization.Grant
+  alias ExOauth2Provider.Token
 
   def create(conn, params) do
-    case Grant.authorize(params) do
+    case Token.grant(params) do
       {:ok, access_token} ->
         conn
         |> put_resp_content_type("text/json")
