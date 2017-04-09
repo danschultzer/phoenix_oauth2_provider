@@ -20,14 +20,12 @@ defmodule PhoenixOauth2Provider.AuthorizedApplicationControllerTest do
     application3 = fixture(:application, %{user: fixture(:user), name: "Application 3"})
 
     conn = get conn, oauth_authorized_application_path(conn, :index)
-    assert body = html_response(conn, 200)
+    body = html_response(conn, 200)
 
     assert body =~ "Your authorized applications"
     assert body =~ application1.name
     assert body =~ application2.name
     refute body =~ application3.name
-    application1 = fixture(:application, %{user: fixture(:user), name: "Application 1"})
-    application2 = fixture(:application, %{user: fixture(:user), name: "Application 2"})
   end
 
   test "deletes chosen authorized application", %{conn: conn, application: application} do

@@ -18,7 +18,7 @@ defmodule PhoenixOauth2Provider.ApplicationControllerTest do
     application2 = fixture(:application, %{user: fixture(:user), name: "Application 2"})
 
     conn = get conn, oauth_application_path(conn, :index)
-    assert body = html_response(conn, 200)
+    body = html_response(conn, 200)
 
     assert body =~ "Your applications"
     assert body =~ application1.name
@@ -30,14 +30,14 @@ defmodule PhoenixOauth2Provider.ApplicationControllerTest do
     assert html_response(conn, 200) =~ "New Application"
   end
 
-  test "create/2 creates application and redirects to show when data is valid", %{conn: base_conn} do
-    conn = post base_conn, oauth_application_path(conn, :create), oauth_application: @create_attrs
+  test "create/2 creates application and redirects to show when data is valid", %{conn: conn} do
+    new_conn = post conn, oauth_application_path(conn, :create), oauth_application: @create_attrs
 
-    assert %{uid: uid} = redirected_params(conn)
-    assert redirected_to(conn) == oauth_application_path(conn, :show, uid)
+    assert %{uid: uid} = redirected_params(new_conn)
+    assert redirected_to(new_conn) == oauth_application_path(new_conn, :show, uid)
 
-    conn = get base_conn, oauth_application_path(conn, :show, uid)
-    assert html_response(conn, 200) =~ "Application: "
+    new_conn = get conn, oauth_application_path(conn, :show, uid)
+    assert html_response(new_conn, 200) =~ "Application: "
   end
 
   test "create/2 does not create application and renders errors when data is invalid", %{conn: conn} do
@@ -51,13 +51,13 @@ defmodule PhoenixOauth2Provider.ApplicationControllerTest do
     assert html_response(conn, 200) =~ "Edit Application"
   end
 
-  test "update/2 updates chosen application and redirects when data is valid", %{conn: base_conn, user: user} do
+  test "update/2 updates chosen application and redirects when data is valid", %{conn: conn, user: user} do
     application = fixture(:application, %{user: user})
-    conn = put base_conn, oauth_application_path(conn, :update, application), oauth_application: @update_attrs
-    assert redirected_to(conn) == oauth_application_path(conn, :show, application)
+    new_conn = put conn, oauth_application_path(conn, :update, application), oauth_application: @update_attrs
+    assert redirected_to(new_conn) == oauth_application_path(new_conn, :show, application)
 
-    conn = get base_conn, oauth_application_path(conn, :show, application)
-    assert html_response(conn, 200) =~ @update_attrs.name
+    new_conn = get conn, oauth_application_path(conn, :show, application)
+    assert html_response(new_conn, 200) =~ @update_attrs.name
   end
 
   test "update/2 does not update chosen application and renders errors when data is invalid", %{conn: conn, user: user} do
@@ -66,13 +66,13 @@ defmodule PhoenixOauth2Provider.ApplicationControllerTest do
     assert html_response(conn, 200) =~ "Edit Application"
   end
 
-  test "delete/2 deletes chosen application", %{conn: base_conn, user: user} do
+  test "delete/2 deletes chosen application", %{conn: conn, user: user} do
     application = fixture(:application, %{user: user})
-    conn = delete base_conn, oauth_application_path(conn, :delete, application)
-    assert redirected_to(conn) == oauth_application_path(conn, :index)
+    new_conn = delete conn, oauth_application_path(conn, :delete, application)
+    assert redirected_to(new_conn) == oauth_application_path(new_conn, :index)
 
     assert_error_sent 404, fn ->
-      get base_conn, oauth_application_path(conn, :show, application)
+      get conn, oauth_application_path(conn, :show, application)
     end
   end
 end

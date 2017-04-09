@@ -16,4 +16,18 @@ defmodule PhoenixOauth2Provider.TokenController do
         |> json(error)
     end
   end
+
+  def revoke(conn, params) do
+    case Token.revoke(params) do
+      {:ok, response} ->
+        conn
+        |> put_resp_content_type("text/json")
+        |> json(response)
+      {:error, error, status} ->
+        conn
+        |> put_resp_content_type("text/json")
+        |> put_status(status)
+        |> json(error)
+    end
+  end
 end

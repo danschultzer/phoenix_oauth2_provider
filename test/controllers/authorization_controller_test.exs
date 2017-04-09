@@ -28,7 +28,7 @@ defmodule PhoenixOauth2Provider.AuthorizationControllerTest do
     application = fixture(:application, %{user: user})
 
     conn = get conn, oauth_authorization_path(conn, :new, valid_request(application))
-    assert body = html_response(conn, 200)
+    body = html_response(conn, 200)
 
     assert body =~ "Authorize <strong>#{application.name}</strong> to use your account?"
     assert body =~ application.name
