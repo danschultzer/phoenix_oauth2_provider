@@ -251,26 +251,26 @@ config :phoenix_oauth2_provider, PhoenixOauth2Provider,
   defp router_instructions(%{base: base, controllers: controllers}) do
     namespace = if controllers, do: ", #{base}", else: ""
     """
-    Add the following to your router.ex file.
+    Configure your router.ex file the following way:
+
     defmodule #{base}.Router do
       use #{base}.Web, :router
-      use PhoenixOauth2Provider.Router # Add this
+      use PhoenixOauth2Provider.Router
 
-      pipeline :browser do
-        ...
-      end
       pipeline :protected do
-        ...
+        # Require user authentication
       end
 
-      # Add these blocks
+      # Don't require CSRF protection
       pipeline :oauth_public do
         plug :put_secure_browser_headers
       end
-      scope "/" do
+
+      scope "/"#{namespace} do
         pipe_through :oauth_public
         oauth_routes :public
       end
+
       scope "/"#{namespace} do
         pipe_through :protected
         oauth_routes :protected

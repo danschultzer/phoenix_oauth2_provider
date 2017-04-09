@@ -1,20 +1,35 @@
 defmodule PhoenixOauth2Provider.Router do
   @moduledoc """
   Handles routing for PhoenixOauth2Provider.
+
   ## Usage
-  Add the following to your `web/router.ex` file
+
+  Configure `lib/my_project/web/router.ex` the following way:
+
       defmodule MyProject.Router do
         use MyProject.Web, :router
-        use PhoenixOauth2Provider.Router         # Add this
-        scope "/" do
-          pipe_through :protected
-          oauth_routes()                    # Add this
+        use PhoenixOauth2Provider.Router
+
+        pipeline :oauth_public do
+          plug :put_secure_browser_headers
         end
-        # ...
+
+        pipeline :protected do
+          # Require user authentication
+        end
+
+        scope "/", MyProject.Web do
+          pipe_through :oauth_public
+          oauth_routes :public
+        end
+
+        scope "/", MyProject.Web do
+          pipe_through :protected
+          oauth_routes :protected
+        end
+
+        ...
       end
-  Alternatively, you may want to use the login plug in individual controllers. In
-  this case, you can have one pipeline, one scope and call `oauth_routes :all`.
-  In this case, it will add both the public and protected routes.
   """
 
   alias PhoenixOauth2Provider.AuthorizationController
@@ -30,9 +45,10 @@ defmodule PhoenixOauth2Provider.Router do
 
   @doc """
   PhoenixOauth2Provider Router macro.
-  Use this macro to define the various PhoenixOauth2Provider Routes.
+  Use this macro to define the PhoenixOauth2Provider routes.
+
   ## Examples:
-      # Routes that are open with no CSRF protection
+      # Routes that are public with no CSRF protection
       scope "/" do
         pipe_through :public
         oauth_routes :public

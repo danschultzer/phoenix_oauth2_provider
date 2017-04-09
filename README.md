@@ -32,25 +32,40 @@ Set up routes:
 defmodule MyApp.Router do
   use MyApp.Web, :router
   use ExOauth2Provider.Router
-  ...
-  scope "/", MyApp do
-    ...
+
+  # ...
+
+  pipeline :protected do
+    # Require user authentication
   end
 
-  scope "/" do
-    pipe_through :protected # Make sure that a user session exists
-    oauth2_paths()
+  pipeline :oauth_public do
+    plug :put_secure_browser_headers
   end
+
+  scope "/", MyApp.Web do
+    pipe_through :oauth_public
+    oauth_routes :public
+  end
+
+  scope "/", MyApp.Web do
+    pipe_through :protected
+    oauth_routes :protected
+  end
+
+  # ...
 end
 ```
 
 That's it! The following OAuth 2.0 routes will now be available in your app:
 
 ```
-oauth_authorize_path  GET    /oauth/authorize
-oauth_authorize_path  POST   /oauth/authorize
-oauth_authorize_path  GET    /oauth/authorize/:code
-oauth_authorize_path  DELETE /oauth/authorize
+oauth_authorize_path  GET    /oauth/authorize         AuthorizationController :new
+oauth_authorize_path  POST   /oauth/authorize         AuthorizationController :create
+oauth_authorize_path  GET    /oauth/authorize/:code   AuthorizationController :show
+oauth_authorize_path  DELETE /oauth/authorize         AuthorizationController :delete
+oauth_token_path      POST   /oauth/token             TokenController :create
+oauth_token_path      POST   /oauth/revoke            TokenController :revoke
 ```
 
 ## Configuration
