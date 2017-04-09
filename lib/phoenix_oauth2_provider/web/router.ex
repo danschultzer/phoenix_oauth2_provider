@@ -64,7 +64,6 @@ defmodule PhoenixOauth2Provider.Router do
         if mode == :public do
           post "/token", TokenController, :create
           post "/revoke", TokenController, :revoke
-          # get "/token/info", TokenInfoController, :show
         end
       end
     end
