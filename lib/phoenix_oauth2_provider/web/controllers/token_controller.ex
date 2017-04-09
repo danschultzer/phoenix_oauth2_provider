@@ -7,11 +7,9 @@ defmodule PhoenixOauth2Provider.TokenController do
     case Token.grant(params) do
       {:ok, access_token} ->
         conn
-        |> put_resp_content_type("text/json")
         |> json(access_token)
       {:error, error, status} ->
         conn
-        |> put_resp_content_type("text/json")
         |> put_status(status)
         |> json(error)
     end
@@ -21,11 +19,9 @@ defmodule PhoenixOauth2Provider.TokenController do
     case Token.revoke(params) do
       {:ok, response} ->
         conn
-        |> put_resp_content_type("text/json")
         |> json(response)
       {:error, error, status} ->
         conn
-        |> put_resp_content_type("text/json")
         |> put_status(status)
         |> json(error)
     end

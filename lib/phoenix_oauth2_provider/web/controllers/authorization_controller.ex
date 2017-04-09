@@ -45,7 +45,6 @@ defmodule PhoenixOauth2Provider.AuthorizationController do
   end
   defp redirect_or_render({:error, error, status}, conn) do
     conn
-    |> put_resp_content_type("text/json")
     |> put_status(status)
     |> json(error)
   end
