@@ -66,7 +66,7 @@ defmodule PhoenixOauth2Provider.Router do
       options = Map.merge(%{scope: "oauth"}, unquote(Macro.escape(options)))
 
       scope "/#{options[:scope]}", as: "oauth" do
-        if mode === :protected do
+        if mode == :protected do
           scope "/authorize" do
             get "/", AuthorizationController, :new
             post "/", AuthorizationController, :create
@@ -77,7 +77,7 @@ defmodule PhoenixOauth2Provider.Router do
           resources "/authorized_applications", AuthorizedApplicationController, only: [:index, :delete], param: "uid"
         end
 
-        if mode === :public do
+        if mode == :public do
           post "/token", TokenController, :create
           post "/revoke", TokenController, :revoke
         end
