@@ -21,7 +21,6 @@ for {name, files} <- [
     "priv/boilerplate/templates/#{name}", "", binding(), files
 end
 IEx.Helpers.recompile
-#
 
 Logger.configure(level: :info)
 

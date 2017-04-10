@@ -6,7 +6,8 @@ config :phoenix_oauth2_provider, PhoenixOauth2Provider,
   repo: PhoenixOauth2Provider.Test.Repo,
   resource_owner: PhoenixOauth2Provider.Test.User,
   scopes: ~w(read write),
-  router: PhoenixOauth2Provider.Test.Router
+  router: PhoenixOauth2Provider.Test.Router,
+  use_refresh_token: true
 
 config :phoenix_oauth2_provider, ecto_repos: [PhoenixOauth2Provider.Test.Repo]
 config :phoenix_oauth2_provider, PhoenixOauth2Provider.Test.Repo,

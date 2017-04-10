@@ -5,7 +5,7 @@ defmodule PhoenixOauth2Provider.ApplicationController do
   import PhoenixOauth2Provider
 
   def index(conn, _params) do
-    applications = OauthApplications.list_applications_for(current_resource_owner(conn))
+    applications = OauthApplications.get_applications_for(current_resource_owner(conn))
     render(conn, "index.html", applications: applications)
   end
 
