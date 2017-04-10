@@ -55,10 +55,9 @@ defmodule PhoenixOauth2Provider.Mixfile do
 
   defp package do
     [
-      maintainers: ["Dan Shultzer"],
+      maintainers: ["Dan Shultzer", "Benjamin Schultzer"],
       licenses: ["MIT"],
-      links: %{github: "https://github.com/danschultzer/phoenix_oauth2_provider"},
-      files: ~w(lib) ++ ~w(LICENSE mix.exs README.md)
+      links: %{github: "https://github.com/danschultzer/phoenix_oauth2_provider"}
     ]
   end
 end
