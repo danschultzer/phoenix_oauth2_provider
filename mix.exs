@@ -1,7 +1,7 @@
 defmodule PhoenixOauth2Provider.Mixfile do
   use Mix.Project
 
-  @version "0.1.0"
+  @version "0.1.1"
 
   def project do
     [app: :phoenix_oauth2_provider,
@@ -39,7 +39,7 @@ defmodule PhoenixOauth2Provider.Mixfile do
 
   defp deps do
     [
-      {:ex_oauth2_provider, "~> 0.1"},
+      {:ex_oauth2_provider, github: "danschultzer/ex_oauth2_provider"},
       {:gettext, "~> 0.13"},
       {:phoenix, "~> 1.3.0-rc"},
 
