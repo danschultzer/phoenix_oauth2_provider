@@ -184,8 +184,6 @@ config :phoenix_oauth2_provider, PhoenixOauth2Provider,
     authorized_application: "authorized_application_view.ex"
   ]
 
-  defp view_files, do: @view_files
-
   defp gen_phoenix_oauth2_provider_views(%{views: true, boilerplate: true, binding: binding} = config) do
     files = @view_files
     |> Enum.filter_map(&(validate_option(config, elem(&1,0))), &(elem(&1, 1)))
@@ -202,7 +200,6 @@ config :phoenix_oauth2_provider, PhoenixOauth2Provider,
     authorized_application: {:authorized_application, ~w(index)},
     layout: {:all, ~w(app)}
   ]
-  defp template_files, do: @template_files
 
   defp validate_option(_, :all), do: true
   defp validate_option(%{opts: opts}, opt) do
@@ -241,7 +238,6 @@ config :phoenix_oauth2_provider, PhoenixOauth2Provider,
     authorized_application: "authorized_application_controller.ex"
 
   ]
-  defp controller_files, do: @controller_files
 
   defp gen_phoenix_oauth2_provider_controllers(%{controllers: true, boilerplate: true, binding: binding, base: base} = config) do
     files = @controller_files
@@ -402,8 +398,6 @@ config :phoenix_oauth2_provider, PhoenixOauth2Provider,
         {acc_bin, [opt | acc]}
     end
   end
-
-  defp all_options, do: @all_options_atoms
 
   defp print_installed_options(_config) do
     ["mix phoenix_oauth2_provider.install"]
