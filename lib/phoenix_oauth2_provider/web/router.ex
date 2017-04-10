@@ -44,7 +44,7 @@ defmodule PhoenixOauth2Provider.Router do
   end
 
   @doc """
-  PhoenixOauth2Provider Router macro.
+  PhoenixOauth2Provider router macro.
   Use this macro to define the PhoenixOauth2Provider routes.
 
   ## Examples:

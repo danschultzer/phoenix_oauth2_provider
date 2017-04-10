@@ -1,4 +1,5 @@
 defmodule PhoenixOauth2Provider.TokenController do
+  @moduledoc false
   use PhoenixOauth2Provider.Web, :controller
 
   alias ExOauth2Provider.Token

@@ -1,7 +1,5 @@
 defmodule PhoenixOauth2Provider.Mix.Utils do
-  @moduledoc """
-  Utils helpers for mix tasks.
-  """
+  @moduledoc false
 
   def rm_dir!(dir) do
     if File.dir? dir do

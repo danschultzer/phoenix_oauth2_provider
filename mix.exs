@@ -11,7 +11,7 @@ defmodule PhoenixOauth2Provider.Mixfile do
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      compilers: [:phoenix] ++ Mix.compilers,
-     preferred_cli_env: [credo: :test],
+     preferred_cli_env: [credo: :test, ex_doc: :test],
      deps: deps(),
 
      # Hex
@@ -48,7 +48,8 @@ defmodule PhoenixOauth2Provider.Mixfile do
 
       {:ex_machina, "~> 1.0", only: :test},
       {:postgrex, ">= 0.11.1", only: :test},
-      {:credo, "~> 0.7", only: [:dev, :test]}
+      {:credo, "~> 0.7", only: [:dev, :test]},
+      {:ex_doc, "~> 0.14", only: :dev, runtime: false}
     ]
   end
 

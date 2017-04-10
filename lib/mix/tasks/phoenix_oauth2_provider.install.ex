@@ -8,28 +8,28 @@ defmodule Mix.Tasks.PhoenixOauth2Provider.Install do
   @moduledoc """
   Configure PhoenixOauth2Provider for your Phoenix application.
   This installer will normally do the following unless given an option not to do so:
-  * Append the :phoenix_oauth2_provider configuration to your `config/config.exs` file.
-  * Generate appropriate migration files.
-  * Generate appropriate view files.
-  * Generate appropriate template files.
-  * Generate a `WEB_PATH/phoenix_oauth2_provider_web.ex` file.
+    * Append the :phoenix_oauth2_provider configuration to your `config/config.exs` file.
+    * Generate appropriate migration files.
+    * Generate appropriate view files.
+    * Generate appropriate template files.
+    * Generate a `WEB_PATH/phoenix_oauth2_provider_web.ex` file.
   ## Examples
       mix phoenix_oauth2_provider.install
   ## Option list
-  A PhoenixOauth2Provider configuration will be appended to your `config/config.exs` file unless
-  the `--no-config` option is given.
-  A `--resource-owner MyApp.User` option can be given to override the default resource owner module in config
-  A `--repo MyApp.Repo` option can be given to override the default Repo module
-  A `--config-file config/config.exs` option can be given to change what config file to append to.
-  A `--controllers` option to generate controllers boilerplate (not default)
-  A `--installed-options` option to list the previous install options
+    * A PhoenixOauth2Provider configuration will be appended to your `config/config.exs` file unless
+    the `--no-config` option is given.
+    * A `--resource-owner MyApp.User` option can be given to override the default resource owner module in config.
+    * A `--repo MyApp.Repo` option can be given to override the default Repo module.
+    * A `--config-file config/config.exs` option can be given to change what config file to append to.
+    * A `--controllers` option to generate controllers boilerplate (not default).
+    * A `--installed-options` option to list the previous install options.
   ## Disable Options
-  * `--no-config` -- Don't append to your `config/config.exs` file.
-  * `--no-web` -- Don't create the `phoenix_oauth2_provider_web.ex` file.
-  * `--no-views` -- Don't create the `WEB_PATH/views/phoenix_oauth2_provider/` files.
-  * `--no-templates` -- Don't create the `WEB_PATH/templates/phoenix_oauth2_provider` files.
-  * `--no-boilerplate` -- Don't create any of the boilerplate files.
-  * `--no-provider` -- Don't run ex_oauth2_provider install script.
+    * `--no-config` -- Don't append to your `config/config.exs` file.
+    * `--no-web` -- Don't create the `phoenix_oauth2_provider_web.ex` file.
+    * `--no-views` -- Don't create the `WEB_PATH/views/phoenix_oauth2_provider/` files.
+    * `--no-templates` -- Don't create the `WEB_PATH/templates/phoenix_oauth2_provider` files.
+    * `--no-boilerplate` -- Don't create any of the boilerplate files.
+    * `--no-provider` -- Don't run ex_oauth2_provider install script.
   """
 
   @all_options       ~w(application authorization authorized_application token)
@@ -53,6 +53,7 @@ defmodule Mix.Tasks.PhoenixOauth2Provider.Install do
 
   @switch_names Enum.map(@switches, &(elem(&1, 0)))
 
+  @doc false
   def run(args) do
     {opts, parsed, unknown} = OptionParser.parse(args, switches: @switches)
 
@@ -183,9 +184,9 @@ config :phoenix_oauth2_provider, PhoenixOauth2Provider,
     authorized_application: "authorized_application_view.ex"
   ]
 
-  def view_files, do: @view_files
+  defp view_files, do: @view_files
 
-  def gen_phoenix_oauth2_provider_views(%{views: true, boilerplate: true, binding: binding} = config) do
+  defp gen_phoenix_oauth2_provider_views(%{views: true, boilerplate: true, binding: binding} = config) do
     files = @view_files
     |> Enum.filter_map(&(validate_option(config, elem(&1,0))), &(elem(&1, 1)))
     |> Enum.map(&({:eex, &1, web_path("views/phoenix_oauth2_provider/#{&1}")}))
@@ -193,7 +194,7 @@ config :phoenix_oauth2_provider, PhoenixOauth2Provider,
     Mix.Phoenix.copy_from paths(), "priv/boilerplate/views", "", binding, files
     config
   end
-  def gen_phoenix_oauth2_provider_views(config), do: config
+  defp gen_phoenix_oauth2_provider_views(config), do: config
 
   @template_files [
     application: {:application, ~w(edit new form index show)},
@@ -201,7 +202,7 @@ config :phoenix_oauth2_provider, PhoenixOauth2Provider,
     authorized_application: {:authorized_application, ~w(index)},
     layout: {:all, ~w(app)}
   ]
-  def template_files, do: @template_files
+  defp template_files, do: @template_files
 
   defp validate_option(_, :all), do: true
   defp validate_option(%{opts: opts}, opt) do
@@ -211,13 +212,13 @@ config :phoenix_oauth2_provider, PhoenixOauth2Provider,
   ################
   # Templates
 
-  def gen_phoenix_oauth2_provider_templates(%{templates: true, boilerplate: true, binding: binding} = config) do
+  defp gen_phoenix_oauth2_provider_templates(%{templates: true, boilerplate: true, binding: binding} = config) do
     for {name, {opt, files}} <- @template_files do
       if validate_option(config, opt), do: copy_templates(binding, name, files)
     end
     config
   end
-  def gen_phoenix_oauth2_provider_templates(config), do: config
+  defp gen_phoenix_oauth2_provider_templates(config), do: config
 
   defp copy_templates(binding, name, file_list) do
     Mix.Phoenix.copy_from paths(),
@@ -240,7 +241,7 @@ config :phoenix_oauth2_provider, PhoenixOauth2Provider,
     authorized_application: "authorized_application_controller.ex"
 
   ]
-  def controller_files, do: @controller_files
+  defp controller_files, do: @controller_files
 
   defp gen_phoenix_oauth2_provider_controllers(%{controllers: true, boilerplate: true, binding: binding, base: base} = config) do
     files = @controller_files
@@ -402,9 +403,9 @@ config :phoenix_oauth2_provider, PhoenixOauth2Provider,
     end
   end
 
-  def all_options, do: @all_options_atoms
+  defp all_options, do: @all_options_atoms
 
-  def print_installed_options(_config) do
+  defp print_installed_options(_config) do
     ["mix phoenix_oauth2_provider.install"]
     |> list_config_options(Application.get_env(:phoenix_oauth2_provider, :opts, []))
     |> Enum.reverse
@@ -412,7 +413,7 @@ config :phoenix_oauth2_provider, PhoenixOauth2Provider,
     |> Mix.shell.info
   end
 
-  def list_config_options(acc, opts) do
+  defp list_config_options(acc, opts) do
     opts
     |> Enum.reduce(acc, &config_option/2)
   end
