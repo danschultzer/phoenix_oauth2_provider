@@ -15,7 +15,7 @@ defmodule PhoenixOauth2Provider.Mixfile do
      deps: deps(),
 
      # Hex
-     description: "The easy way of setting up OAuth 2.0 provider in your Phoenix app",
+     description: "The fastest way to set up OAuth 2.0 server in your Phoenix app",
      package: package(),
 
       # Docs
@@ -39,7 +39,7 @@ defmodule PhoenixOauth2Provider.Mixfile do
 
   defp deps do
     [
-      {:ex_oauth2_provider, github: "danschultzer/ex_oauth2_provider", branch: :master},
+      {:ex_oauth2_provider, "~> 0.1"},
       {:gettext, "~> 0.13"},
       {:phoenix, "~> 1.3.0-rc"},
 
@@ -57,7 +57,8 @@ defmodule PhoenixOauth2Provider.Mixfile do
     [
       maintainers: ["Dan Shultzer", "Benjamin Schultzer"],
       licenses: ["MIT"],
-      links: %{github: "https://github.com/danschultzer/phoenix_oauth2_provider"}
+      links: %{github: "https://github.com/danschultzer/phoenix_oauth2_provider"},
+      files: ~w(lib priv/boilerplate priv/gettext) ++ ~w(LICENSE mix.exs README.md)
     ]
   end
 end
