@@ -20,7 +20,7 @@ defmodule PhoenixOauth2Provider do
   # """
   def current_resource_owner(conn) do
     case conn.assigns[@resource_owner_key] do
-      nil -> raise "Resource owner was not found with :#{@resource_owner_key} assigns"
+      nil            -> raise "Resource owner was not found with :#{@resource_owner_key} assigns"
       resource_owner -> resource_owner
     end
   end

@@ -19,26 +19,18 @@ defmodule PhoenixOauth2Provider.Test.Fixture do
     application
   end
   def fixture(:access_token, %{application: application, user: user} = attrs) do
-    attrs = %{
-      redirect_uri: application.redirect_uri,
-      application: application,
-    }
-    |> Map.merge(attrs)
+    attrs = %{redirect_uri: application.redirect_uri, application: application}
+            |> Map.merge(attrs)
 
-    {:ok, access_token} = user
-    |> OauthAccessTokens.create_token(attrs)
+    {:ok, access_token} = user |> OauthAccessTokens.create_token(attrs)
 
     access_token
   end
   def fixture(:access_grant, %{application: application, user: user} = attrs) do
-    attrs = %{
-      redirect_uri: application.redirect_uri,
-      expires_in: ExOauth2Provider.authorization_code_expires_in
-    }
-    |> Map.merge(attrs)
+    attrs = %{redirect_uri: application.redirect_uri, expires_in: ExOauth2Provider.authorization_code_expires_in}
+            |> Map.merge(attrs)
 
-    {:ok, access_token} = user
-    |> OauthAccessGrants.create_grant(application, attrs)
+    {:ok, access_token} = user |> OauthAccessGrants.create_grant(application, attrs)
 
     access_token
   end
