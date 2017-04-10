@@ -43,9 +43,8 @@ defmodule PhoenixOauth2Provider.Mixfile do
       {:gettext, "~> 0.13"},
       {:phoenix, "~> 1.3.0-rc"},
 
-      {:phoenix_ecto, "~> 3.2", only: :test},
-      {:phoenix_html, "~> 2.6", only: :test},
-
+      {:phoenix_ecto, "~> 3.2", only: [:test, :dev]},
+      {:phoenix_html, "~> 2.6", only: [:test, :dev]},
       {:ex_machina, "~> 1.0", only: :test},
       {:postgrex, ">= 0.11.1", only: :test},
       {:credo, "~> 0.7", only: [:dev, :test]},
