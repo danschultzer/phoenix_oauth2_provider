@@ -1,10 +1,8 @@
 language: elixir
 elixir:
   - 1.4.2
-matrix:
-  include:
-    - otp_release: 19.0
-      elixir: 1.4
+otp_release:
+  - 19.0
 script:
   - mix test
   - mix credo
