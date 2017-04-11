@@ -2,6 +2,7 @@ defmodule Mix.Tasks.PhoenixOauth2Provider.Install do
   use Mix.Task
 
   import PhoenixOauth2Provider.Mix.Utils
+  require Logger
 
   @shortdoc "Configure the PhoenixOauth2Provider Package"
 
@@ -77,8 +78,9 @@ defmodule Mix.Tasks.PhoenixOauth2Provider.Install do
     |> gen_phoenix_oauth2_provider_views
     |> gen_phoenix_oauth2_provider_templates
     |> gen_phoenix_oauth2_provider_controllers
-    |> touch_config                # work around for config file not getting recompiled
     |> print_instructions
+    |> recompile_ex_oauth2_provider
+    |> touch_config # work around for config file not getting recompiled
   end
 
   defp gen_phoenix_oauth2_provider_config(config) do
@@ -118,7 +120,7 @@ config :phoenix_oauth2_provider, PhoenixOauth2Provider,
         {:error, "Configuration was not added because one already exists!"}
       true ->
         File.write!(config_file, source <> "\n" <> string)
-        {:ok, "Your config/config.exs file was updated."}
+        {:ok, "Your config/config.exs file was updated, and deps has been recompiled."}
     end
   end
 
@@ -159,6 +161,16 @@ config :phoenix_oauth2_provider, PhoenixOauth2Provider,
     end
   end
 
+  defp recompile_ex_oauth2_provider(%{provider: true} = config) do
+    try do
+      # Make sure that oauth2 uses the new config file
+      Mix.Task.run "deps.compile", ~w(ex_oauth2_provider --force)
+    rescue
+      e in Mix.Error -> Logger.warn(e.message)
+    end
+    config
+  end
+  defp recompile_ex_oauth2_provider(config), do: config
 
   ################
   # Web
