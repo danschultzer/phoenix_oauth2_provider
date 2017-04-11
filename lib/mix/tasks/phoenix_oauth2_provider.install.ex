@@ -147,19 +147,23 @@ config :phoenix_oauth2_provider, PhoenixOauth2Provider,
   end
   defp install_ex_oauth2_provider(config), do: config
   defp install_ex_oauth2_provider_task(%{config_file: _config_file, repo: _repo} = config, opts) do
-    args = install_ex_oauth2_provider_task_args(config, opts)
-    Mix.Tasks.ExOauth2Provider.Install.run args
+    config
+    |> install_ex_oauth2_provider_task_args(opts)
+    |> Mix.Tasks.ExOauth2Provider.Install.run
     config
   end
+
   defp install_ex_oauth2_provider_task_args(config, opts) do
-    args = ~w(--config-file #{config.config_file} --repo #{config.repo}) ++ opts
-    case config[:resource_owner] do
-      true ->
-        args ++ ~w(--resource-owner=#{config[:resource_owner]})
-      _ ->
-        args
-    end
+    ~w(--config-file #{config.config_file} --repo #{config.repo})
+    |> Enum.concat(opts)
+    |> add_resource_owner_arg(config)
   end
+
+  defp add_resource_owner_arg(args, %{resource_owner: resource_owner}) do
+    args
+    |> Enum.concat(~w(--resource-owner=#{resource_owner}))
+  end
+  defp add_resource_owner_arg(args, _), do: args
 
   defp recompile_ex_oauth2_provider(%{provider: true} = config) do
     try do
