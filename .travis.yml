@@ -4,6 +4,7 @@ elixir:
 otp_release:
   - 19.0
 script:
+  - mix deps.compile
   - mix test
   - mix credo
 env:
