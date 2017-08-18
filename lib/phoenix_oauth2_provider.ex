@@ -14,7 +14,7 @@ defmodule PhoenixOauth2Provider do
   """
   @config             Application.get_env(:phoenix_oauth2_provider, PhoenixOauth2Provider, [])
   @module             Keyword.get(@config, :module, Mix.Phoenix.base())
-  @router_helpers     Module.concat([Keyword.get(@config, :router, Module.concat([@module, "Web", "Router"])), "Helpers"])
+  @router_helpers     Module.concat([Keyword.get(@config, :router, Module.concat(["#{@module}Web", "Router"])), "Helpers"])
   @resource_owner_key Keyword.get(@config, :current_resource_owner, :current_user)
 
   @doc false
