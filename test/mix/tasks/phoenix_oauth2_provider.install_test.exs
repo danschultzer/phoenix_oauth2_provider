@@ -18,7 +18,7 @@ defmodule Mix.Tasks.PhoenixOauth2Provider.InstallTest do
     :ok
   end
 
-  @web_path "lib/phoenix_oauth2_provider/web"
+  @web_path "lib/phoenix_oauth2_provider_web"
   @all_template_dirs ~w(layout application authorization authorized_application)
   @all_views ~w(phoenix_oauth2_provider_view_helpers.ex phoenix_oauth2_provider_view.ex layout_view.ex) ++
     ~w(application_view.ex authorization_view.ex authorized_application_view.ex)
