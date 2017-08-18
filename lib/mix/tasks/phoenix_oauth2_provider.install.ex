@@ -181,7 +181,7 @@ config :phoenix_oauth2_provider, PhoenixOauth2Provider,
 
   defp gen_phoenix_oauth2_provider_web(%{web: true, boilerplate: true, binding: binding} = config) do
     Mix.Phoenix.copy_from paths(),
-      "priv/boilerplate", "", binding, [
+      "priv/boilerplate", binding, [
         {:eex, "phoenix_oauth2_provider_web.ex", web_path("phoenix_oauth2_provider_web.ex")},
       ]
     config
@@ -205,7 +205,7 @@ config :phoenix_oauth2_provider, PhoenixOauth2Provider,
     |> Enum.filter_map(&(validate_option(config, elem(&1,0))), &(elem(&1, 1)))
     |> Enum.map(&({:eex, &1, web_path("views/phoenix_oauth2_provider/#{&1}")}))
 
-    Mix.Phoenix.copy_from paths(), "priv/boilerplate/views", "", binding, files
+    Mix.Phoenix.copy_from paths(), "priv/boilerplate/views", binding, files
     config
   end
   defp gen_phoenix_oauth2_provider_views(config), do: config
@@ -235,7 +235,7 @@ config :phoenix_oauth2_provider, PhoenixOauth2Provider,
 
   defp copy_templates(binding, name, file_list) do
     Mix.Phoenix.copy_from paths(),
-      "priv/boilerplate/templates/#{name}", "", binding, copy_templates_files(name, file_list)
+      "priv/boilerplate/templates/#{name}", binding, copy_templates_files(name, file_list)
   end
   defp copy_templates_files(name, file_list) do
     for fname <- file_list do
@@ -260,9 +260,9 @@ config :phoenix_oauth2_provider, PhoenixOauth2Provider,
     |> Enum.filter_map(&(validate_option(config, elem(&1,0))), &(elem(&1, 1)))
     |> Enum.map(&({:text, &1, web_path("controllers/phoenix_oauth2_provider/#{&1}")}))
 
-    # Mix.Phoenix.copy_from paths(), "priv/boilerplate/views", "", binding, files
+    # Mix.Phoenix.copy_from paths(), "priv/boilerplate/views", binding, files
     Mix.Phoenix.copy_from paths(),
-      "priv/../lib/phoenix_oauth2_provider/web/controllers", "", binding, files
+      "priv/../lib/phoenix_oauth2_provider/web/controllers", binding, files
 
     files
     |> Enum.map(fn({_, _, f}) -> {f, File.read!(f)} end)
