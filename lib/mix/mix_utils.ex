@@ -35,7 +35,7 @@ defmodule PhoenixOauth2Provider.Mix.Utils do
 
     unless Enum.empty?(unknown) do
       unknown
-      |> Enum.map(&(elem(&1,0)))
+      |> Enum.map(&(elem(&1, 0)))
       |> Enum.join(", ")
       |> raise_invalid
     end

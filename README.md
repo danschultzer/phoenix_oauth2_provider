@@ -30,7 +30,7 @@ Set up routes:
 
 ```elixir
 defmodule MyApp.Router do
-  use MyApp.Web, :router
+  use MyAppWeb, :router
   use ExOauth2Provider.Router
 
   # ...
@@ -43,12 +43,12 @@ defmodule MyApp.Router do
     plug :put_secure_browser_headers
   end
 
-  scope "/", MyApp.Web do
+  scope "/", MyAppWeb do
     pipe_through :oauth_public
     oauth_routes :public
   end
 
-  scope "/", MyApp.Web do
+  scope "/", MyAppWeb do
     pipe_through :protected
     oauth_routes :protected
   end

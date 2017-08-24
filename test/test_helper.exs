@@ -18,7 +18,7 @@ for {name, files} <- [
   end
 
   Mix.Phoenix.copy_from [".", :phoenix_oauth2_provider],
-    "priv/boilerplate/templates/#{name}", "", binding(), files
+    "priv/boilerplate/templates/#{name}", binding(), files
 end
 IEx.Helpers.recompile
 

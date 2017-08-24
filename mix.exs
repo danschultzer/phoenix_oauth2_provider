@@ -41,8 +41,7 @@ defmodule PhoenixOauth2Provider.Mixfile do
     [
       {:ex_oauth2_provider, "~> 0.2.0"},
       {:gettext, "~> 0.13"},
-      {:phoenix, "~> 1.3.0-rc"},
-
+      {:phoenix, "~> 1.3.0"},
       {:phoenix_ecto, "~> 3.2", only: [:test, :dev]},
       {:phoenix_html, "~> 2.6", only: [:test, :dev]},
       {:ex_machina, "~> 1.0", only: :test},
