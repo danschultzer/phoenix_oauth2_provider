@@ -287,7 +287,7 @@ config :phoenix_oauth2_provider, PhoenixOauth2Provider,
     Configure your router.ex file the following way:
 
     defmodule #{base}.Router do
-      use #{base}.Web, :router
+      use #{base}Web, :router
       use PhoenixOauth2Provider.Router
 
       pipeline :protected do

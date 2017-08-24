@@ -7,7 +7,7 @@ defmodule PhoenixOauth2Provider.Router do
   Configure `lib/my_project/web/router.ex` the following way:
 
       defmodule MyProject.Router do
-        use MyProject.Web, :router
+        use MyProjectWeb, :router
         use PhoenixOauth2Provider.Router
 
         pipeline :oauth_public do
@@ -18,12 +18,12 @@ defmodule PhoenixOauth2Provider.Router do
           # Require user authentication
         end
 
-        scope "/", MyProject.Web do
+        scope "/", MyProjectWeb do
           pipe_through :oauth_public
           oauth_routes :public
         end
 
-        scope "/", MyProject.Web do
+        scope "/", MyProjectWeb do
           pipe_through :protected
           oauth_routes :protected
         end
