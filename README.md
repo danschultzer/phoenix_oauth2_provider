@@ -4,6 +4,8 @@
 
 Get an OAuth 2 provider running in your Phoenix app with controllers, views and models in just two minutes.
 
+> This version requires Phoenix 1.3 or higher. If you use a previous Phoenix version, please use v0.2.0 instead.
+
 ## Installation
 
 Add PhoenixOauth2Provider to your list of dependencies in `mix.exs`:
@@ -12,7 +14,7 @@ Add PhoenixOauth2Provider to your list of dependencies in `mix.exs`:
 def deps do
   [
     # ...
-    {:phoenix_oauth2_provider, "~> 0.2.0"}
+    {:phoenix_oauth2_provider, "~> 0.3.0"}
     # ...
   ]
 end
