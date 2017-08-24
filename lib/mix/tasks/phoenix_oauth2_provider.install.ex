@@ -202,7 +202,7 @@ config :phoenix_oauth2_provider, PhoenixOauth2Provider,
 
   defp gen_phoenix_oauth2_provider_views(%{views: true, boilerplate: true, binding: binding} = config) do
     files = @view_files
-    |> Enum.filter_map(&(validate_option(config, elem(&1,0))), &(elem(&1, 1)))
+    |> Enum.filter_map(&(validate_option(config, elem(&1, 0))), &(elem(&1, 1)))
     |> Enum.map(&({:eex, &1, web_path("views/phoenix_oauth2_provider/#{&1}")}))
 
     Mix.Phoenix.copy_from paths(), "priv/boilerplate/views", binding, files
@@ -257,7 +257,7 @@ config :phoenix_oauth2_provider, PhoenixOauth2Provider,
 
   defp gen_phoenix_oauth2_provider_controllers(%{controllers: true, boilerplate: true, binding: binding, base: base} = config) do
     files = @controller_files
-    |> Enum.filter_map(&(validate_option(config, elem(&1,0))), &(elem(&1, 1)))
+    |> Enum.filter_map(&(validate_option(config, elem(&1, 0))), &(elem(&1, 1)))
     |> Enum.map(&({:text, &1, web_path("controllers/phoenix_oauth2_provider/#{&1}")}))
 
     # Mix.Phoenix.copy_from paths(), "priv/boilerplate/views", binding, files
@@ -368,8 +368,8 @@ config :phoenix_oauth2_provider, PhoenixOauth2Provider,
     resource_owner = opts[:resource_owner] || "#{base}.User"
     config_file = opts[:config_file] || @config_file
 
-    binding = Keyword.put binding ,:base, base
-    binding = Keyword.put binding ,:web_prefix, web_path("")
+    binding = Keyword.put binding, :base, base
+    binding = Keyword.put binding, :web_prefix, web_path("")
 
     bin_opts
     |> Enum.map(&({&1, true}))
