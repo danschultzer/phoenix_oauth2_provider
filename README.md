@@ -31,7 +31,7 @@ mix phoenix_oauth2_provider.install
 Set up routes:
 
 ```elixir
-defmodule MyApp.Router do
+defmodule MyAppWeb.Router do
   use MyAppWeb, :router
   use ExOauth2Provider.Router
 

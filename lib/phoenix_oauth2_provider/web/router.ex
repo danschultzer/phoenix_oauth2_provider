@@ -4,7 +4,7 @@ defmodule PhoenixOauth2Provider.Router do
 
   ## Usage
 
-  Configure `lib/my_project/web/router.ex` the following way:
+  Configure `lib/my_project_web/router.ex` the following way:
 
       defmodule MyProject.Router do
         use MyProjectWeb, :router
