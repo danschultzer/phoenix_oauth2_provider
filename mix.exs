@@ -44,7 +44,6 @@ defmodule PhoenixOauth2Provider.Mixfile do
       {:phoenix, "~> 1.3.0"},
       {:phoenix_ecto, "~> 3.2", only: [:test, :dev]},
       {:phoenix_html, "~> 2.6", only: [:test, :dev]},
-      {:ex_machina, "~> 1.0", only: :test},
       {:postgrex, ">= 0.11.1", only: :test},
       {:credo, "~> 0.7", only: [:dev, :test]},
       {:ex_doc, "~> 0.14", only: :dev, runtime: false}
