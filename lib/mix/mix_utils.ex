@@ -19,7 +19,7 @@ defmodule PhoenixOauth2Provider.Mix.Utils do
     |> Enum.join(", ")
     |> raise_unsupported
   end
-  def raise_unsupported(list) do
+  defp raise_unsupported(list) do
     Mix.raise """
     The following option(s) are not supported:
         #{inspect list}
@@ -40,7 +40,7 @@ defmodule PhoenixOauth2Provider.Mix.Utils do
       |> raise_invalid
     end
   end
-  def raise_invalid(opts) do
+  defp raise_invalid(opts) do
     Mix.raise """
     Invalid argument(s) #{opts}
     """

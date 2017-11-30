@@ -439,10 +439,7 @@ config :phoenix_oauth2_provider, PhoenixOauth2Provider,
 
   defp web_path(path), do: Path.join(get_web_prefix(), path)
   defp get_web_prefix do
-    case :erlang.function_exported(Mix.Phoenix, :web_path, 2) do
-      # Above 1.3.0.rc otp_app is passed as a symbol
-      true -> Mix.Phoenix.otp_app() |> Mix.Phoenix.web_path()
-      _ -> Mix.Phoenix.web_path("")
-    end
+    Mix.Phoenix.otp_app()
+    |> Mix.Phoenix.web_path()
   end
 end
