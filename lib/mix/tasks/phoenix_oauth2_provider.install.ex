@@ -120,7 +120,7 @@ config :phoenix_oauth2_provider, PhoenixOauth2Provider,
         {:error, "Configuration was not added because one already exists!"}
       true ->
         File.write!(config_file, source <> "\n" <> string)
-        {:ok, "Your config/config.exs file was updated, and deps has been recompiled."}
+        {:ok, "Your #{config_file} file was updated, and deps has been recompiled."}
     end
   end
 
