@@ -1,4 +1,6 @@
 defmodule PhoenixOauth2Provider.Test.Fixture do
+  @moduledoc false
+
   alias PhoenixOauth2Provider.Test.Repo
   alias PhoenixOauth2Provider.Test.User
   alias ExOauth2Provider.OauthAccessTokens
