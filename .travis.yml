@@ -8,5 +8,12 @@ script:
   - mix deps.compile
   - mix test
   - mix credo
+
+  - rm -rf _build
+  - UUID=resource_owners mix test
+
+  - rm -rf _build
+  - UUID=all mix test
+
 env:
   - MIX_ENV=test
