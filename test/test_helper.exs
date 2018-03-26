@@ -1,13 +1,13 @@
+alias PhoenixOauth2Provider.Test.{Endpoint, Repo}
 ExUnit.start()
 
 additional_opts = if System.get_env("UUID"), do: ["--uuid", System.get_env("UUID")], else: []
 install_opts = Enum.concat(["--no-config"], additional_opts)
 
-Mix.Task.run "ecto.drop", ~w(--quiet)
 Mix.shell.cmd("rm priv/test/migrations/*_create_oauth_tables.exs")
 Mix.Task.run "ex_oauth2_provider.install", install_opts
 Mix.Task.run "ecto.create", ~w(--quiet)
-Mix.Task.run "ecto.migrate", ~w(--quiet)
+Mix.Task.run "ecto.migrate"
 
 # Install all template files
 PhoenixOauth2Provider.Mix.Utils.rm_dir! "tmp"
@@ -29,7 +29,7 @@ IEx.Helpers.recompile
 
 Logger.configure(level: :info)
 
-{:ok, _pid} = PhoenixOauth2Provider.Test.Endpoint.start_link
-{:ok, _pid} = PhoenixOauth2Provider.Test.Repo.start_link
+{:ok, _pid} = Endpoint.start_link
+{:ok, _pid} = Repo.start_link
 
-Ecto.Adapters.SQL.Sandbox.mode(PhoenixOauth2Provider.Test.Repo, :manual)
+Ecto.Adapters.SQL.Sandbox.mode(Repo, :manual)
