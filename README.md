@@ -69,6 +69,8 @@ oauth_token_path      POST   /oauth/token             TokenController :create
 oauth_token_path      POST   /oauth/revoke            TokenController :revoke
 ```
 
+Please read the [ex_oauth2_provider](https://github.com/danschultzer/ex_oauth2_provider) documentation for further customization.
+
 ## Configuration
 
 ### Resource owner schema
