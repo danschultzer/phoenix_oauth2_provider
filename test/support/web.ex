@@ -1,4 +1,6 @@
 defmodule PhoenixOauth2Provider.Test.PhoenixOauth2Provider.Web do
+  @moduledoc false
+
   def view do
     quote do
       use Phoenix.View, root: "tmp/templates"
