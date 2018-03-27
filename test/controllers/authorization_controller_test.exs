@@ -3,15 +3,15 @@ defmodule PhoenixOauth2Provider.AuthorizationControllerTest do
 
   alias ExOauth2Provider.OauthApplications
   import PhoenixOauth2Provider.Test.Fixture
-  import Ecto.Query
 
   def valid_request(%OauthApplications.OauthApplication{} = application) do
     %{client_id: application.uid, response_type: "code"}
   end
 
   def last_grant do
-    ExOauth2Provider.repo.one(from x in ExOauth2Provider.OauthAccessGrants.OauthAccessGrant,
-      order_by: [desc: x.id], limit: 1)
+    ExOauth2Provider.OauthAccessGrants.OauthAccessGrant
+    |> ExOauth2Provider.repo.all()
+    |> List.last()
   end
 
   def last_grant_token do

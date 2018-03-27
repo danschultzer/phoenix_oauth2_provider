@@ -18,3 +18,13 @@ config :phoenix_oauth2_provider, PhoenixOauth2Provider.Test.Repo,
 config :phoenix_oauth2_provider, PhoenixOauth2Provider.Test.Endpoint,
   secret_key_base: "1lJGFCaor+gPGc21GCvn+NE0WDOA5ujAMeZoy7oC5un7NPUXDir8LAE+Iba5bpGH",
   render_errors: [view: PhoenixOauth2Provider.Test.ErrorView, accepts: ~w(html json)]
+
+unless is_nil(System.get_env("UUID")) do
+config :phoenix_oauth2_provider, PhoenixOauth2Provider,
+  resource_owner: {PhoenixOauth2Provider.Test.User, :binary_id}
+end
+
+if System.get_env("UUID") == "all" do
+config :phoenix_oauth2_provider, PhoenixOauth2Provider,
+  app_schema: ExOauth2Provider.Schema.UUID
+end

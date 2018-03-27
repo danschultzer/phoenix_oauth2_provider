@@ -24,6 +24,7 @@ defmodule Mix.Tasks.PhoenixOauth2Provider.Install do
     * A `--config-file config/config.exs` option can be given to change what config file to append to.
     * A `--controllers` option to generate controllers boilerplate (not default).
     * A `--installed-options` option to list the previous install options.
+    * A `--uuid` option can be given to set up :uuid enabled tables in ex_oauth2_provider
   ## Disable Options
     * `--no-config` -- Don't append to your `config/config.exs` file.
     * `--no-web` -- Don't create the `phoenix_oauth2_provider_web.ex` file.
@@ -49,7 +50,7 @@ defmodule Mix.Tasks.PhoenixOauth2Provider.Install do
   @switches [
     resource_owner: :string, repo: :string, log_only: :boolean,
     controllers: :boolean, module: :string, installed_options: :boolean,
-    config_file: :string
+    config_file: :string, uuid: :string
   ] ++ Enum.map(@boolean_options, &({String.to_atom(&1), :boolean}))
 
   @switch_names Enum.map(@switches, &(elem(&1, 0)))
@@ -142,8 +143,9 @@ config :phoenix_oauth2_provider, PhoenixOauth2Provider,
   ##################
   # ExOauth2Provider
 
-  defp install_ex_oauth2_provider(%{provider: true, repo: _repo} = config) do
-    install_ex_oauth2_provider_task(config, ~w(--no-config))
+  defp install_ex_oauth2_provider(%{provider: true, repo: _repo, uuid: uuid} = config) do
+    opts = if is_nil(uuid), do: ~w(--no-config), else: ["--no-config", "--uuid", uuid]
+    install_ex_oauth2_provider_task(config, opts)
   end
   defp install_ex_oauth2_provider(config), do: config
   defp install_ex_oauth2_provider_task(%{config_file: _config_file, repo: _repo} = config, opts) do
@@ -387,6 +389,7 @@ config :phoenix_oauth2_provider, PhoenixOauth2Provider,
     |> Map.put(:installed_options, opts[:installed_options])
     |> Map.put(:config_file, config_file)
     |> Map.put(:resource_owner, resource_owner)
+    |> Map.put(:uuid, opts[:uuid])
     |> do_default_config(opts)
   end
 

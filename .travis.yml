@@ -4,9 +4,19 @@ elixir:
   - 1.4
 otp_release:
   - 19.0
+env:
+  - MIX_ENV=test
+  - UUID=resource_owners MIX_ENV=test
+  - UUID=all MIX_ENV=test
+sudo: false
+matrix:
+  exclude:
+    - elixir: 1.4
+      env: UUID=resource_owners MIX_ENV=test
+    - elixir: 1.4
+      env: UUID=all MIX_ENV=test
 script:
   - mix deps.compile
   - mix test
+after_script:
   - mix credo
-env:
-  - MIX_ENV=test

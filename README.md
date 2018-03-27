@@ -32,7 +32,7 @@ Set up routes:
 ```elixir
 defmodule MyAppWeb.Router do
   use MyAppWeb, :router
-  use ExOauth2Provider.Router
+  use PhoenixOauth2Provider.Router
 
   # ...
 
@@ -68,6 +68,8 @@ oauth_authorize_path  DELETE /oauth/authorize         AuthorizationController :d
 oauth_token_path      POST   /oauth/token             TokenController :create
 oauth_token_path      POST   /oauth/revoke            TokenController :revoke
 ```
+
+Please read the [ex_oauth2_provider](https://github.com/danschultzer/ex_oauth2_provider) documentation for further customization.
 
 ## Configuration
 

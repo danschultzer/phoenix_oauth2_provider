@@ -1,7 +1,7 @@
 defmodule PhoenixOauth2Provider.Test.User do
   @moduledoc false
 
-  use Ecto.Schema
+  use PhoenixOauth2Provider.Test.Schema
   import Ecto.Changeset
 
   schema "users" do
