@@ -1,6 +1,7 @@
 # PhoenixOauth2Provider
 
 [![Build Status](https://travis-ci.org/danschultzer/phoenix_oauth2_provider.svg?branch=master)](https://travis-ci.org/danschultzer/phoenix_oauth2_provider) [![hex.pm](http://img.shields.io/hexpm/v/phoenix_oauth2_provider.svg?style=flat)](https://hex.pm/packages/phoenix_oauth2_provider) [![hex.pm downloads](https://img.shields.io/hexpm/dt/phoenix_oauth2_provider.svg?style=flat)](https://hex.pm/packages/phoenix_oauth2_provider)
+
 Get an OAuth 2 provider running in your Phoenix app with controllers, views and models in just two minutes.
 
 > This version requires Phoenix 1.3 or higher. If you use a previous Phoenix version, please use v0.2.0 instead.
