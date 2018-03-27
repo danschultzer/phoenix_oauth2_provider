@@ -2,11 +2,12 @@ defmodule PhoenixOauth2Provider.TokenControllerTest do
   use PhoenixOauth2Provider.Test.ConnCase
 
   import PhoenixOauth2Provider.Test.Fixture
-  import Ecto.Query
 
   def last_access_token do
-    ExOauth2Provider.repo.one(from x in ExOauth2Provider.OauthAccessTokens.OauthAccessToken,
-      order_by: [desc: x.id], limit: 1).token
+    ExOauth2Provider.OauthAccessTokens.OauthAccessToken
+    |> ExOauth2Provider.repo.all()
+    |> List.last()
+    |> Map.get(:token)
   end
 
   setup %{conn: conn} do
