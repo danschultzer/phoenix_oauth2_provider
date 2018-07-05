@@ -10,7 +10,7 @@ Mix.Task.run "ecto.create", ~w(--quiet)
 Mix.Task.run "ecto.migrate"
 
 # Install all template files
-PhoenixOauth2Provider.Mix.Utils.rm_dir! "tmp"
+File.rm_rf("tmp")
 for {name, files} <- [
   application: ~w(edit new form index show),
   authorization: ~w(error new show),
