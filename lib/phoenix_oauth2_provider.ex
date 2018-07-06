@@ -13,10 +13,13 @@ defmodule PhoenixOauth2Provider do
   library.
   """
   alias Mix.Phoenix
+  alias Plug.Conn
+  alias Ecto.Schema
 
   @doc """
   Will get current resource owner from endpoint
   """
+  @spec current_resource_owner(Conn.t()) :: Schema.t() | no_return
   def current_resource_owner(conn) do
     resource_owner_key = Keyword.get(config(), :current_resource_owner, :current_user)
 
@@ -27,11 +30,13 @@ defmodule PhoenixOauth2Provider do
   end
 
   @doc false
+  @spec config :: Keyword.t()
   def config do
     Application.get_env(:phoenix_oauth2_provider, PhoenixOauth2Provider, [])
   end
 
   @doc false
+  @spec router_helpers :: module()
   def router_helpers do
     module = Keyword.get(config(), :router, router_module())
 

@@ -3,6 +3,7 @@ defmodule PhoenixOauth2Provider.AuthorizedApplicationController do
   use PhoenixOauth2Provider.Web, :controller
   alias ExOauth2Provider.OauthApplications
 
+  @spec index(Conn.t(), map()) :: Conn.t()
   def index(conn, _params) do
     applications = conn
                    |> PhoenixOauth2Provider.current_resource_owner()
@@ -11,6 +12,7 @@ defmodule PhoenixOauth2Provider.AuthorizedApplicationController do
                    render(conn, "index.html", applications: applications)
   end
 
+  @spec delete(Conn.t(), map()) :: Conn.t()
   def delete(conn, %{"uid" => uid}) do
     application = OauthApplications.get_application!(uid)
     {:ok, _application} = OauthApplications.revoke_all_access_tokens_for(application, PhoenixOauth2Provider.current_resource_owner(conn))

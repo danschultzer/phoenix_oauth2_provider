@@ -3,19 +3,23 @@ defmodule PhoenixOauth2Provider.ViewHelpers do
   Helper functions for PhoenixOauth2Provider Views.
   """
   use Phoenix.HTML
+  alias Ecto.Changeset
+  alias Phoenix.HTML
 
   @doc """
   Generates tag for inlined form input errors.
   """
+  @spec error_tag(Changeset.t(), atom()) :: HTML.safe() | nil
   def error_tag(form, field) do
     if error = form.errors[field] do
-      content_tag :span, translate_error(error), class: "help-block"
+      content_tag(:span, translate_error(error), class: "help-block")
     end
   end
 
   @doc """
   Translates an error message using gettext.
   """
+  @spec translate_error({binary(), Keyword.t()}) :: binary()
   def translate_error({msg, opts}) do
     # Because error messages were defined within Ecto, we must
     # call the Gettext module passing our Gettext backend. We
@@ -28,6 +32,7 @@ defmodule PhoenixOauth2Provider.ViewHelpers do
     Gettext.dngettext(PhoenixOauth2Provider.Web.Gettext, "errors", msg, msg, opts[:count] || 0, opts)
   end
 
+  @spec translate_error(binary()) :: binary()
   def translate_error(msg) do
     Gettext.dgettext(PhoenixOauth2Provider.Web.Gettext, "errors", msg)
   end
