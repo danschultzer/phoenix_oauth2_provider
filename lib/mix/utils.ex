@@ -1,6 +1,8 @@
 defmodule PhoenixOauth2Provider.Mix.Utils do
   @moduledoc false
 
+  alias Mix.Phoenix
+
   @spec raise_option_errors([atom()]) :: no_return
   def raise_option_errors(list) do
     list
@@ -46,7 +48,7 @@ defmodule PhoenixOauth2Provider.Mix.Utils do
   @spec web_path(Path.t()) :: binary()
   def web_path(path), do: Path.join(get_web_prefix(), path)
 
-  defp get_web_prefix, do: Mix.Phoenix.web_path(Mix.Phoenix.otp_app())
+  defp get_web_prefix, do: Phoenix.web_path(Phoenix.otp_app())
 
   @spec list_to_existing_atoms([binary()]) :: [atom()]
   def list_to_existing_atoms(list) do

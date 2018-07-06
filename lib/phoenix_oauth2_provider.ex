@@ -12,6 +12,7 @@ defmodule PhoenixOauth2Provider do
   [ex_oauth2_provider](https://github.com/danschultzer/ex_oauth2_provider)
   library.
   """
+  alias Mix.Phoenix
 
   @doc """
   Will get current resource owner from endpoint
@@ -43,7 +44,7 @@ defmodule PhoenixOauth2Provider do
 
   defp web_module do
     config()
-    |> Keyword.get(:module, Mix.Phoenix.base())
+    |> Keyword.get(:module, Phoenix.base())
     |> Kernel.to_string()
     |> Kernel.<>("Web")
   end

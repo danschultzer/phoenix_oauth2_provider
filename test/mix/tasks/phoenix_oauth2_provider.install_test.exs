@@ -5,6 +5,7 @@ Mix.shell(Mix.Shell.Process)
 defmodule Mix.Tasks.PhoenixOauth2Provider.InstallTest do
   use ExUnit.Case
   alias PhoenixOauth2Provider.Test.MixHelpers
+  alias Mix.Tasks.PhoenixOauth2Provider.Install
 
   defmodule MigrationsRepo do
     def __adapter__ do
@@ -24,8 +25,7 @@ defmodule Mix.Tasks.PhoenixOauth2Provider.InstallTest do
 
   test "generates files for application" do
     MixHelpers.in_tmp "generates_files_for_application", fn ->
-      ~w(--repo PhoenixOauth2Provider.Test.Repo --log-only --controllers --module PhoenixOauth2Provider.Test --no-provider)
-      |> Mix.Tasks.PhoenixOauth2Provider.Install.run()
+      Install.run(~w(--repo PhoenixOauth2Provider.Test.Repo --log-only --controllers --module PhoenixOauth2Provider.Test --no-provider))
 
       ~w(application_view.ex authorization_view.ex authorized_application_view.ex phoenix_oauth2_provider_view.ex layout_view.ex phoenix_oauth2_provider_view_helpers.ex)
       |> MixHelpers.assert_file_list(@all_views, web_path("views/phoenix_oauth2_provider/"))
@@ -44,8 +44,7 @@ defmodule Mix.Tasks.PhoenixOauth2Provider.InstallTest do
 
   test "does not generate files for full" do
     MixHelpers.in_tmp "does_not_generate_files_for_full", fn ->
-      ~w(--repo PhoenixOauth2Provider.Test.Repo --full --log-only --no-boilerplate --no-provider)
-      |> Mix.Tasks.PhoenixOauth2Provider.Install.run()
+      Install.run(~w(--repo PhoenixOauth2Provider.Test.Repo --full --log-only --no-boilerplate --no-provider))
 
       MixHelpers.assert_file_list([], @all_views, web_path("views/phoenix_oauth2_provider/"))
 
@@ -59,8 +58,7 @@ defmodule Mix.Tasks.PhoenixOauth2Provider.InstallTest do
     MixHelpers.in_tmp "installs_phoenix_oauth2_provider_config", fn ->
       file_path = "config.exs"
       File.touch!(file_path)
-      ~w(--repo PhoenixOauth2Provider.Test.Repo --no-boilerplate --no-migrations --config-file #{File.cwd!}/#{file_path})
-      |> Mix.Tasks.PhoenixOauth2Provider.Install.run()
+      Install.run(~w(--repo PhoenixOauth2Provider.Test.Repo --no-boilerplate --no-migrations --config-file #{File.cwd!}/#{file_path}))
 
       MixHelpers.assert_file file_path, fn file ->
         assert file =~ "config :phoenix_oauth2_provider, PhoenixOauth2Provider"
@@ -77,8 +75,7 @@ defmodule Mix.Tasks.PhoenixOauth2Provider.InstallTest do
 
   test "instructions" do
     MixHelpers.in_tmp "prints_instructions", fn ->
-      ~w(--repo PhoenixOauth2Provider.Test.Repo --no-boilerplate --no-migrations --no-config)
-      |> Mix.Tasks.PhoenixOauth2Provider.Install.run()
+      Install.run(~w(--repo PhoenixOauth2Provider.Test.Repo --no-boilerplate --no-migrations --no-config))
 
       assert_received {:mix_shell, :info, [
         """
@@ -124,8 +121,7 @@ defmodule Mix.Tasks.PhoenixOauth2Provider.InstallTest do
         """
       ]}
 
-      ~w(--repo PhoenixOauth2Provider.Test.Repo --no-boilerplate --controllers --no-migrations --no-config)
-      |> Mix.Tasks.PhoenixOauth2Provider.Install.run()
+      Install.run(~w(--repo PhoenixOauth2Provider.Test.Repo --no-boilerplate --controllers --no-migrations --no-config))
 
       assert_received {:mix_shell, :info, [
         """
@@ -162,8 +158,7 @@ defmodule Mix.Tasks.PhoenixOauth2Provider.InstallTest do
 
   describe "installs ex_oauth2_provider" do
     test "adds migrations" do
-      ~w(--repo PhoenixOauth2Provider.Test.Repo --no-boilerplate --no-config --repo #{to_string MigrationsRepo})
-      |> Mix.Tasks.PhoenixOauth2Provider.Install.run()
+      Install.run(~w(--repo PhoenixOauth2Provider.Test.Repo --no-boilerplate --no-config --repo #{to_string MigrationsRepo}))
 
       assert [_] = MixHelpers.tmp_path() |> Path.join("migrations/*_create_oauth_tables.exs") |> Path.wildcard()
       assert_received {:mix_shell, :info, [
@@ -178,8 +173,7 @@ defmodule Mix.Tasks.PhoenixOauth2Provider.InstallTest do
   describe "installed options" do
     test "install options default" do
       Application.put_env :phoenix_oauth2_provider, :opts, [:application]
-      ~w(--repo PhoenixOauth2Provider.Test.Repo --installed-options --no-provider)
-      |>  Mix.Tasks.PhoenixOauth2Provider.Install.run()
+      Install.run(~w(--repo PhoenixOauth2Provider.Test.Repo --installed-options --no-provider))
 
       assert_received {:mix_shell, :info, ["mix phoenix_oauth2_provider.install --application"]}
     end

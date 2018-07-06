@@ -1,21 +1,9 @@
 defmodule PhoenixOauth2Provider.AuthorizationControllerTest do
   use PhoenixOauth2Provider.Test.ConnCase
-  alias ExOauth2Provider.OauthApplications
+  alias ExOauth2Provider.{OauthAccessGrants.OauthAccessGrant,
+                          OauthApplications,
+                          Scopes}
   alias PhoenixOauth2Provider.Test.Fixtures
-
-  def valid_request(%OauthApplications.OauthApplication{} = application) do
-    %{client_id: application.uid, response_type: "code"}
-  end
-
-  def last_grant do
-    ExOauth2Provider.OauthAccessGrants.OauthAccessGrant
-    |> ExOauth2Provider.repo.all()
-    |> List.last()
-  end
-
-  def last_grant_token do
-    last_grant().token
-  end
 
   setup %{conn: conn} do
     user = Fixtures.user()
@@ -32,7 +20,7 @@ defmodule PhoenixOauth2Provider.AuthorizationControllerTest do
     assert body =~ "Authorize <strong>#{application.name}</strong> to use your account?"
     assert body =~ application.name
     application.scopes
-    |> ExOauth2Provider.Scopes.to_list
+    |> Scopes.to_list()
     |> Enum.each(fn(scope) ->
       assert body =~ "<li>#{scope}</li>"
     end)
@@ -100,4 +88,14 @@ defmodule PhoenixOauth2Provider.AuthorizationControllerTest do
       assert "The resource owner or authorization server denied the request." == body["error_description"]
     end
   end
+
+  defp valid_request(%{uid: uid}), do: %{client_id: uid, response_type: "code"}
+
+  defp last_grant do
+    OauthAccessGrant
+    |> ExOauth2Provider.repo().all()
+    |> List.last()
+  end
+
+  defp last_grant_token, do: last_grant().token
 end

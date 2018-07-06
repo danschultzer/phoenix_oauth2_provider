@@ -1,13 +1,8 @@
 defmodule PhoenixOauth2Provider.TokenControllerTest do
   use PhoenixOauth2Provider.Test.ConnCase
   alias PhoenixOauth2Provider.Test.Fixtures
-
-  def last_access_token do
-    ExOauth2Provider.OauthAccessTokens.OauthAccessToken
-    |> ExOauth2Provider.repo.all()
-    |> List.last()
-    |> Map.get(:token)
-  end
+  alias ExOauth2Provider.{OauthAccessTokens,
+                          OauthAccessTokens.OauthAccessToken}
 
   setup %{conn: conn} do
     application = Fixtures.application(%{user: Fixtures.user()})
@@ -107,7 +102,7 @@ defmodule PhoenixOauth2Provider.TokenControllerTest do
       conn = post conn, Routes.oauth_token_path(conn, :revoke, request)
       body = json_response(conn, 200)
       assert body == %{}
-      assert ExOauth2Provider.OauthAccessTokens.is_revoked?(last_access_token())
+      assert OauthAccessTokens.is_revoked?(last_access_token())
     end
 
     test "revoke/2 with invalid token", %{conn: conn, request: request} do
@@ -115,5 +110,12 @@ defmodule PhoenixOauth2Provider.TokenControllerTest do
       body = json_response(conn, 200)
       assert body == %{}
     end
+  end
+
+  defp last_access_token do
+    OauthAccessToken
+    |> ExOauth2Provider.repo.all()
+    |> List.last()
+    |> Map.get(:token)
   end
 end

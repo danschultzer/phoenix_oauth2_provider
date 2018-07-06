@@ -2,6 +2,8 @@ defmodule Mix.Tasks.PhoenixOauth2Provider.Install do
   use Mix.Task
 
   alias PhoenixOauth2Provider.Mix.Utils
+  alias Mix.Tasks.ExOauth2Provider.Install, as: ExOAuth2ProviderInstall
+  alias Mix.{Phoenix, Project}
   require Logger
 
   @shortdoc "Configure the PhoenixOauth2Provider Package"
@@ -160,7 +162,7 @@ defmodule Mix.Tasks.PhoenixOauth2Provider.Install do
   defp install_ex_oauth2_provider(%{provider: true, repo: _repo} = config) do
     config
     |> install_ex_oauth2_provider_task_args()
-    |> Mix.Tasks.ExOauth2Provider.Install.run()
+    |> ExOAuth2ProviderInstall.run()
 
     config
   end
@@ -203,7 +205,7 @@ defmodule Mix.Tasks.PhoenixOauth2Provider.Install do
     source  = "priv/boilerplate"
     mapping = [{:eex, "phoenix_oauth2_provider_web.ex", Utils.web_path("phoenix_oauth2_provider_web.ex")}]
 
-    Mix.Phoenix.copy_from(@apps, source, binding, mapping)
+    Phoenix.copy_from(@apps, source, binding, mapping)
 
     config
   end
@@ -228,7 +230,7 @@ defmodule Mix.Tasks.PhoenixOauth2Provider.Install do
               |> Enum.map(&(elem(&1, 1)))
               |> Enum.map(&({:eex, &1, Utils.web_path("views/phoenix_oauth2_provider/#{&1}")}))
 
-    Mix.Phoenix.copy_from(@apps, source, binding, mapping)
+    Phoenix.copy_from(@apps, source, binding, mapping)
 
     config
   end
@@ -260,7 +262,7 @@ defmodule Mix.Tasks.PhoenixOauth2Provider.Install do
     source  = "priv/boilerplate/templates/#{name}"
     mapping = copy_templates_files(name, file_list)
 
-    Mix.Phoenix.copy_from(@apps, source, binding, mapping)
+    Phoenix.copy_from(@apps, source, binding, mapping)
   end
 
   defp copy_templates_files(name, file_list) do
@@ -287,7 +289,7 @@ defmodule Mix.Tasks.PhoenixOauth2Provider.Install do
               |> Enum.map(&(elem(&1, 1)))
               |> Enum.map(&({:text, &1, Utils.web_path("controllers/phoenix_oauth2_provider/#{&1}")}))
 
-    Mix.Phoenix.copy_from(@apps, source, binding, mapping)
+    Phoenix.copy_from(@apps, source, binding, mapping)
     Enum.each(mapping, &update_controller_file_with_base_module!(&1, base))
 
     config
@@ -379,10 +381,10 @@ defmodule Mix.Tasks.PhoenixOauth2Provider.Install do
     do_config({bin_opts, opts})
   end
   defp do_config({bin_opts, opts}) do
-    binding = Mix.Project.config()
+    binding = Project.config()
               |> Keyword.fetch!(:app)
               |> Atom.to_string()
-              |> Mix.Phoenix.inflect()
+              |> Phoenix.inflect()
 
     base = opts[:module] || binding[:base]
     opts = Keyword.put(opts, :base, base)
