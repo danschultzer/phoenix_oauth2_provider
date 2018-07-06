@@ -1,4 +1,4 @@
-alias PhoenixOauth2Provider.Test.{Endpoint, Repo}
+alias PhoenixOauth2Provider.Test.{Endpoint, MixHelpers, Repo}
 ExUnit.start()
 
 install_opts = "UUID"
@@ -15,7 +15,7 @@ Mix.Task.run("ecto.create", ~w(--quiet))
 Mix.Task.run("ecto.migrate")
 
 # Install all template files
-File.rm_rf("tmp")
+File.rm_rf(MixHelpers.tmp_path())
 
 templates = [application: ~w(edit new form index show),
              authorization: ~w(error new show),
@@ -25,7 +25,7 @@ templates = [application: ~w(edit new form index show),
 for {name, files} <- templates do
   apps   = [".", :phoenix_oauth2_provider]
   source = "priv/boilerplate/templates/#{name}"
-  mapping = Enum.map(files, fn file -> {:eex, "#{file}.html.eex", "tmp/templates/#{name}/#{file}.html.eex"} end)
+  mapping = Enum.map(files, fn file -> {:eex, "#{file}.html.eex", "priv/test/tmp/templates/#{name}/#{file}.html.eex"} end)
 
   Mix.Phoenix.copy_from(apps, source, binding(), mapping)
 end

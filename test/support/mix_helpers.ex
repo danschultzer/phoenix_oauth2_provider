@@ -5,7 +5,7 @@ defmodule PhoenixOauth2Provider.Test.MixHelpers do
 
   @spec tmp_path :: binary()
   def tmp_path do
-    Path.expand("../../tmp", __DIR__)
+    Path.expand("./test/tmp", :code.priv_dir(:phoenix_oauth2_provider))
   end
 
   @spec in_tmp(Path.t(), (-> Path.res())) :: Path.res() | no_return

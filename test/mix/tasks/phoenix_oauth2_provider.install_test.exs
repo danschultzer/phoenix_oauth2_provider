@@ -12,7 +12,7 @@ defmodule Mix.Tasks.PhoenixOauth2Provider.InstallTest do
     end
 
     def config do
-      [priv: "tmp", otp_app: :phoenix_oauth2_provider]
+      [priv: "priv/test/tmp", otp_app: :phoenix_oauth2_provider]
     end
   end
 
@@ -165,7 +165,7 @@ defmodule Mix.Tasks.PhoenixOauth2Provider.InstallTest do
       ~w(--repo PhoenixOauth2Provider.Test.Repo --no-boilerplate --no-config --repo #{to_string MigrationsRepo})
       |> Mix.Tasks.PhoenixOauth2Provider.Install.run()
 
-      assert [_] = Path.wildcard("tmp/migrations/*_create_oauth_tables.exs")
+      assert [_] = MixHelpers.tmp_path() |> Path.join("migrations/*_create_oauth_tables.exs") |> Path.wildcard()
       assert_received {:mix_shell, :info, [
         """
         Don't forget to run the new migrations and seeds with:
