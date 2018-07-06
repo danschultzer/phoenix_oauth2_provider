@@ -32,7 +32,19 @@ defmodule PhoenixOauth2Provider do
 
   @doc false
   def router_helpers do
-    module = Keyword.get(config(), :module, Mix.Phoenix.base())
-    Module.concat([Keyword.get(config(), :router, Module.concat(["#{module}Web", "Router"])), "Helpers"])
+    module = Keyword.get(config(), :router, router_module())
+
+    Module.concat([module, "Helpers"])
+  end
+
+  defp router_module do
+    Module.concat([web_module(), "Router"])
+  end
+
+  defp web_module do
+    config()
+    |> Keyword.get(:module, Mix.Phoenix.base())
+    |> Kernel.to_string()
+    |> Kernel.<>("Web")
   end
 end
