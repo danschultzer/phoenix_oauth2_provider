@@ -12,7 +12,6 @@ defmodule PhoenixOauth2Provider.Test.ConnCase do
   inside a transaction which is reset at the beginning
   of the test unless the test case is marked as async.
   """
-
   use ExUnit.CaseTemplate
 
   using do
@@ -20,12 +19,11 @@ defmodule PhoenixOauth2Provider.Test.ConnCase do
       # Import conveniences for testing with connections
       use Phoenix.ConnTest
       import PhoenixOauth2Provider.Test.ErrorView
-      import PhoenixOauth2Provider.Test.Router.Helpers
+      alias PhoenixOauth2Provider.Test.Router.Helpers, as: Routes
 
       @endpoint PhoenixOauth2Provider.Test.Endpoint
     end
   end
-
 
   setup tags do
     unless tags[:async] do
@@ -33,5 +31,4 @@ defmodule PhoenixOauth2Provider.Test.ConnCase do
     end
     {:ok, conn: Phoenix.ConnTest.build_conn()}
   end
-
 end

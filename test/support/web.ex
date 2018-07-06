@@ -11,7 +11,7 @@ defmodule PhoenixOauth2Provider.Test.PhoenixOauth2Provider.Web do
       # Use all HTML functionality (forms, tags, etc)
       use Phoenix.HTML
 
-      import PhoenixOauth2Provider.Test.Router.Helpers
+      alias PhoenixOauth2Provider.Test.Router.Helpers, as: Routes
 
       # Add view helpers including routes helpers
       import PhoenixOauth2Provider.ViewHelpers

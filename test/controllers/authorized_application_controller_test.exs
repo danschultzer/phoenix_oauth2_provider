@@ -18,7 +18,7 @@ defmodule PhoenixOauth2Provider.AuthorizedApplicationControllerTest do
     Fixtures.access_token(%{application: application2, user: user})
     application3 = Fixtures.application(%{user: Fixtures.user(), name: "Application 3"})
 
-    conn = get conn, oauth_authorized_application_path(conn, :index)
+    conn = get conn, Routes.oauth_authorized_application_path(conn, :index)
     body = html_response(conn, 200)
 
     assert body =~ "Your authorized applications"
@@ -28,7 +28,7 @@ defmodule PhoenixOauth2Provider.AuthorizedApplicationControllerTest do
   end
 
   test "deletes chosen authorized application", %{conn: conn, application: application} do
-    conn = delete conn, oauth_authorized_application_path(conn, :delete, application)
-    assert redirected_to(conn) == oauth_authorized_application_path(conn, :index)
+    conn = delete conn, Routes.oauth_authorized_application_path(conn, :delete, application)
+    assert redirected_to(conn) == Routes.oauth_authorized_application_path(conn, :index)
   end
 end

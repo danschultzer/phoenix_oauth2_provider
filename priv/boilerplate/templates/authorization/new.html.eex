@@ -10,7 +10,7 @@
 </div>
 
 <div class="actions">
-  <%%= form_tag oauth_authorization_path(@conn, :create), method: :post do %>
+  <%%= form_tag Routes.oauth_authorization_path(@conn, :create), method: :post do %>
     <input type="hidden" name="client_id" value="<%%= @params["client_id"] %>" />
     <input type="hidden" name="redirect_uri" value="<%%= @params["redirect_uri"] %>" />
     <input type="hidden" name="state" value="<%%= @params["state"] %>" />
@@ -18,7 +18,7 @@
     <input type="hidden" name="scope" value="<%%= @params["scope"] %>" />
     <%%= submit "Authorize" %>
   <%% end %>
-  <%%= form_tag oauth_authorization_path(@conn, :delete), method: :delete do %>
+  <%%= form_tag Routes.oauth_authorization_path(@conn, :delete), method: :delete do %>
     <input type="hidden" name="client_id" value="<%%= @params["client_id"] %>" />
     <input type="hidden" name="redirect_uri" value="<%%= @params["redirect_uri"] %>" />
     <input type="hidden" name="state" value="<%%= @params["state"] %>" />

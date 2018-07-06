@@ -29,13 +29,13 @@ defmodule PhoenixOauth2Provider.TokenControllerTest do
     end
 
     test "create/2", %{conn: conn, request: request} do
-      conn = post conn, oauth_token_path(conn, :create, request)
+      conn = post conn, Routes.oauth_token_path(conn, :create, request)
       body = json_response(conn, 200)
       assert last_access_token() == body["access_token"]
     end
 
     test "create/2 with error", %{conn: conn, request: request} do
-      conn = post conn, oauth_token_path(conn, :create), Map.merge(request, %{redirect_uri: "invalid"})
+      conn = post conn, Routes.oauth_token_path(conn, :create), Map.merge(request, %{redirect_uri: "invalid"})
       body = json_response(conn, 422)
       assert "The provided authorization grant is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client." == body["error_description"]
     end
@@ -51,7 +51,7 @@ defmodule PhoenixOauth2Provider.TokenControllerTest do
     end
 
     test "create/2", %{conn: conn, request: request} do
-      conn = post conn, oauth_token_path(conn, :create, request)
+      conn = post conn, Routes.oauth_token_path(conn, :create, request)
 
       body = json_response(conn, 200)
       assert last_access_token() == body["access_token"]
@@ -59,7 +59,7 @@ defmodule PhoenixOauth2Provider.TokenControllerTest do
     end
 
     test "create/2 with error", %{conn: conn, request: request} do
-      conn = post conn, oauth_token_path(conn, :create, Map.merge(request, %{client_id: "invalid"}))
+      conn = post conn, Routes.oauth_token_path(conn, :create, Map.merge(request, %{client_id: "invalid"}))
       body = json_response(conn, 422)
       assert "Client authentication failed due to unknown client, no client authentication included, or unsupported authentication method." == body["error_description"]
     end
@@ -78,7 +78,7 @@ defmodule PhoenixOauth2Provider.TokenControllerTest do
     end
 
     test "create/2", %{conn: conn, request: request} do
-      conn = post conn, oauth_token_path(conn, :create, request)
+      conn = post conn, Routes.oauth_token_path(conn, :create, request)
 
       body = json_response(conn, 200)
       assert last_access_token() == body["access_token"]
@@ -86,7 +86,7 @@ defmodule PhoenixOauth2Provider.TokenControllerTest do
     end
 
     test "create/2 with error", %{conn: conn, request: request} do
-      conn = post conn, oauth_token_path(conn, :create, Map.merge(request, %{client_id: "invalid"}))
+      conn = post conn, Routes.oauth_token_path(conn, :create, Map.merge(request, %{client_id: "invalid"}))
       body = json_response(conn, 422)
       assert "Client authentication failed due to unknown client, no client authentication included, or unsupported authentication method." == body["error_description"]
     end
@@ -104,14 +104,14 @@ defmodule PhoenixOauth2Provider.TokenControllerTest do
     end
 
     test "revoke/2", %{conn: conn, request: request} do
-      conn = post conn, oauth_token_path(conn, :revoke, request)
+      conn = post conn, Routes.oauth_token_path(conn, :revoke, request)
       body = json_response(conn, 200)
       assert body == %{}
       assert ExOauth2Provider.OauthAccessTokens.is_revoked?(last_access_token())
     end
 
     test "revoke/2 with invalid token", %{conn: conn, request: request} do
-      conn = post conn, oauth_token_path(conn, :revoke, Map.merge(request, %{token: "invalid"}))
+      conn = post conn, Routes.oauth_token_path(conn, :revoke, Map.merge(request, %{token: "invalid"}))
       body = json_response(conn, 200)
       assert body == %{}
     end

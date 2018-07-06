@@ -16,7 +16,7 @@ defmodule PhoenixOauth2Provider.ApplicationControllerTest do
     application1 = Fixtures.application(%{user: user, name: "Application 1"})
     application2 = Fixtures.application(%{user: Fixtures.user(), name: "Application 2"})
 
-    conn = get conn, oauth_application_path(conn, :index)
+    conn = get conn, Routes.oauth_application_path(conn, :index)
     body = html_response(conn, 200)
 
     assert body =~ "Your applications"
@@ -25,53 +25,53 @@ defmodule PhoenixOauth2Provider.ApplicationControllerTest do
   end
 
   test "new/2 renders form for new applications", %{conn: conn} do
-    conn = get conn, oauth_application_path(conn, :new)
+    conn = get conn, Routes.oauth_application_path(conn, :new)
     assert html_response(conn, 200) =~ "New Application"
   end
 
   test "create/2 creates application and redirects to show when data is valid", %{conn: conn} do
-    new_conn = post conn, oauth_application_path(conn, :create), oauth_application: @create_attrs
+    new_conn = post conn, Routes.oauth_application_path(conn, :create), oauth_application: @create_attrs
 
     assert %{uid: uid} = redirected_params(new_conn)
-    assert redirected_to(new_conn) == oauth_application_path(new_conn, :show, uid)
+    assert redirected_to(new_conn) == Routes.oauth_application_path(new_conn, :show, uid)
 
-    new_conn = get conn, oauth_application_path(conn, :show, uid)
+    new_conn = get conn, Routes.oauth_application_path(conn, :show, uid)
     assert html_response(new_conn, 200) =~ "Application: "
   end
 
   test "create/2 does not create application and renders errors when data is invalid", %{conn: conn} do
-    conn = post conn, oauth_application_path(conn, :create), oauth_application: @invalid_attrs
+    conn = post conn, Routes.oauth_application_path(conn, :create), oauth_application: @invalid_attrs
     assert html_response(conn, 200) =~ "New Application"
   end
 
   test "edit/2 renders form for editing chosen application", %{conn: conn, user: user} do
     application = Fixtures.application(%{user: user})
-    conn = get conn, oauth_application_path(conn, :edit, application)
+    conn = get conn, Routes.oauth_application_path(conn, :edit, application)
     assert html_response(conn, 200) =~ "Edit Application"
   end
 
   test "update/2 updates chosen application and redirects when data is valid", %{conn: conn, user: user} do
     application = Fixtures.application(%{user: user})
-    new_conn = put conn, oauth_application_path(conn, :update, application), oauth_application: @update_attrs
-    assert redirected_to(new_conn) == oauth_application_path(new_conn, :show, application)
+    new_conn = put conn, Routes.oauth_application_path(conn, :update, application), oauth_application: @update_attrs
+    assert redirected_to(new_conn) == Routes.oauth_application_path(new_conn, :show, application)
 
-    new_conn = get conn, oauth_application_path(conn, :show, application)
+    new_conn = get conn, Routes.oauth_application_path(conn, :show, application)
     assert html_response(new_conn, 200) =~ @update_attrs.name
   end
 
   test "update/2 does not update chosen application and renders errors when data is invalid", %{conn: conn, user: user} do
     application = Fixtures.application(%{user: user})
-    conn = put conn, oauth_application_path(conn, :update, application), oauth_application: @invalid_attrs
+    conn = put conn, Routes.oauth_application_path(conn, :update, application), oauth_application: @invalid_attrs
     assert html_response(conn, 200) =~ "Edit Application"
   end
 
   test "delete/2 deletes chosen application", %{conn: conn, user: user} do
     application = Fixtures.application(%{user: user})
-    new_conn = delete conn, oauth_application_path(conn, :delete, application)
-    assert redirected_to(new_conn) == oauth_application_path(new_conn, :index)
+    new_conn = delete conn, Routes.oauth_application_path(conn, :delete, application)
+    assert redirected_to(new_conn) == Routes.oauth_application_path(new_conn, :index)
 
     assert_error_sent 404, fn ->
-      get conn, oauth_application_path(conn, :show, application)
+      get conn, Routes.oauth_application_path(conn, :show, application)
     end
   end
 end

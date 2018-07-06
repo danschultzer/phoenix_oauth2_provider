@@ -16,7 +16,7 @@
       <td><%%= application.inserted_at %></td>
 
       <td class="text-right">
-        <span><%%= link "Delete", to: oauth_authorized_application_path(@conn, :delete, application), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %></span>
+        <span><%%= link "Delete", to: Routes.oauth_authorized_application_path(@conn, :delete, application), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %></span>
       </td>
     </tr>
 <%% end %>
