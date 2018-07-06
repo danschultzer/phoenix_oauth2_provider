@@ -12,10 +12,14 @@ defmodule PhoenixOauth2Provider do
   [ex_oauth2_provider](https://github.com/danschultzer/ex_oauth2_provider)
   library.
   """
+  alias Mix.Phoenix
+  alias Plug.Conn
+  alias Ecto.Schema
 
   @doc """
   Will get current resource owner from endpoint
   """
+  @spec current_resource_owner(Conn.t()) :: Schema.t() | no_return
   def current_resource_owner(conn) do
     resource_owner_key = Keyword.get(config(), :current_resource_owner, :current_user)
 
@@ -26,13 +30,27 @@ defmodule PhoenixOauth2Provider do
   end
 
   @doc false
+  @spec config :: Keyword.t()
   def config do
     Application.get_env(:phoenix_oauth2_provider, PhoenixOauth2Provider, [])
   end
 
   @doc false
+  @spec router_helpers :: module()
   def router_helpers do
-    module = Keyword.get(config(), :module, Mix.Phoenix.base())
-    Module.concat([Keyword.get(config(), :router, Module.concat(["#{module}Web", "Router"])), "Helpers"])
+    module = Keyword.get(config(), :router, router_module())
+
+    Module.concat([module, "Helpers"])
+  end
+
+  defp router_module do
+    Module.concat([web_module(), "Router"])
+  end
+
+  defp web_module do
+    config()
+    |> Keyword.get(:module, Phoenix.base())
+    |> Kernel.to_string()
+    |> Kernel.<>("Web")
   end
 end

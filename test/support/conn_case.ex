@@ -12,26 +12,30 @@ defmodule PhoenixOauth2Provider.Test.ConnCase do
   inside a transaction which is reset at the beginning
   of the test unless the test case is marked as async.
   """
-
   use ExUnit.CaseTemplate
+
+  alias Ecto.Adapters.SQL.Sandbox
+  alias PhoenixOauth2Provider.Test.{Endpoint,
+                                    ErrorView,
+                                    Repo,
+                                    Router.Helpers}
+  alias Phoenix.ConnTest
 
   using do
     quote do
       # Import conveniences for testing with connections
-      use Phoenix.ConnTest
-      import PhoenixOauth2Provider.Test.ErrorView
-      import PhoenixOauth2Provider.Test.Router.Helpers
+      use ConnTest
+      import ErrorView
+      alias Helpers, as: Routes
 
-      @endpoint PhoenixOauth2Provider.Test.Endpoint
+      @endpoint Endpoint
     end
   end
-
 
   setup tags do
     unless tags[:async] do
-      :ok = Ecto.Adapters.SQL.Sandbox.checkout(PhoenixOauth2Provider.Test.Repo)
+      :ok = Sandbox.checkout(Repo)
     end
-    {:ok, conn: Phoenix.ConnTest.build_conn()}
+    {:ok, conn: ConnTest.build_conn()}
   end
-
 end

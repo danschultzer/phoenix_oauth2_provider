@@ -1,7 +1,9 @@
 defmodule Mix.Tasks.PhoenixOauth2Provider.Install do
   use Mix.Task
 
-  import PhoenixOauth2Provider.Mix.Utils
+  alias PhoenixOauth2Provider.Mix.Utils
+  alias Mix.Tasks.ExOauth2Provider.Install, as: ExOAuth2ProviderInstall
+  alias Mix.{Phoenix, Project}
   require Logger
 
   @shortdoc "Configure the PhoenixOauth2Provider Package"
@@ -35,7 +37,7 @@ defmodule Mix.Tasks.PhoenixOauth2Provider.Install do
   """
 
   @all_options       ~w(application authorization authorized_application token)
-  @all_options_atoms Enum.map(@all_options, &(String.to_atom(&1)))
+  @all_options_atoms Enum.map(@all_options, &(String.to_existing_atom(&1)))
   @default_options   ~w(application authorization authorized_application token)
   @full_options      @all_options -- ~w(application authorization authorized_application token)
 
@@ -51,129 +53,147 @@ defmodule Mix.Tasks.PhoenixOauth2Provider.Install do
     resource_owner: :string, repo: :string, log_only: :boolean,
     controllers: :boolean, module: :string, installed_options: :boolean,
     config_file: :string, uuid: :string
-  ] ++ Enum.map(@boolean_options, &({String.to_atom(&1), :boolean}))
+  ] ++ Enum.map(@boolean_options, &({String.to_existing_atom(&1), :boolean}))
 
   @switch_names Enum.map(@switches, &(elem(&1, 0)))
 
+  @apps [".", :phoenix_oauth2_provider]
+
   @doc false
+  @spec run(OptionParser.argv()) :: map()
   def run(args) do
-    {opts, parsed, unknown} = OptionParser.parse(args, switches: @switches)
-
-    verify_args!(parsed, unknown)
-
-    {bin_opts, opts} = parse_options(opts)
-
-    opts
-    |> do_config(bin_opts)
-    |> do_run
+    args
+    |> OptionParser.parse(switches: @switches)
+    |> Utils.verify_args!()
+    |> parse_options()
+    |> do_config()
+    |> do_run()
   end
 
-  defp do_run(%{installed_options: true} = config),
-    do: print_installed_options config
-
+  defp do_run(%{installed_options: true} = config) do
+    print_installed_options(config)
+  end
   defp do_run(config) do
     config
-    |> install_ex_oauth2_provider
-    |> gen_phoenix_oauth2_provider_config
-    |> gen_phoenix_oauth2_provider_web
-    |> gen_phoenix_oauth2_provider_views
-    |> gen_phoenix_oauth2_provider_templates
-    |> gen_phoenix_oauth2_provider_controllers
-    |> print_instructions
-    |> recompile_ex_oauth2_provider
-    |> touch_config # work around for config file not getting recompiled
+    |> install_ex_oauth2_provider()
+    |> gen_phoenix_oauth2_provider_config()
+    |> gen_phoenix_oauth2_provider_web()
+    |> gen_phoenix_oauth2_provider_views()
+    |> gen_phoenix_oauth2_provider_templates()
+    |> gen_phoenix_oauth2_provider_controllers()
+    |> print_instructions()
+    |> recompile_ex_oauth2_provider()
+    |> touch_config() # work around for config file not getting recompiled
   end
 
   defp gen_phoenix_oauth2_provider_config(config) do
     config
-    |> gen_phoenix_oauth2_provider_config_string
+    |> gen_phoenix_oauth2_provider_config_string()
     |> write_config(config)
-    |> log_config
+    |> log_config()
   end
+
   defp gen_phoenix_oauth2_provider_config_string(config) do
     """
-config :phoenix_oauth2_provider, PhoenixOauth2Provider,
-  module: #{config[:base]},
-  current_resource_owner: :current_user,
-  repo: #{config[:repo]},
-  resource_owner: #{config[:resource_owner]}\n
-"""
+    config :phoenix_oauth2_provider, PhoenixOauth2Provider,
+      module: #{config[:base]},
+      current_resource_owner: :current_user,
+      repo: #{config[:repo]},
+      resource_owner: #{config[:resource_owner]}\n
+    """
   end
 
   defp write_config(string, %{config: true, config_file: config_file} = config) do
     case do_write_config(string, config_file) do
       {:error, reason} ->
         Mix.shell.info(reason)
-        Enum.into [config_string: string, log_config?: true], config
+        Enum.into([config_string: string, config_instructions?: true], config)
+
       {:ok, reason} ->
         Mix.shell.info(reason)
-        Enum.into [config_string: string, log_config?: false], config
+        Enum.into([config_string: string, config_instructions?: false], config)
     end
   end
-  defp write_config(string, config), do: Enum.into([log_config?: true, config_string: string], config)
+  defp write_config(string, config) do
+    Enum.into([config_instructions?: true, config_string: string], config)
+  end
 
   defp do_write_config(string, config_file) do
-    source = if File.exists?(config_file), do: File.read!(config_file), else: false
-    cond do
-      source === false ->
-        {:error, "Could not find #{config_file}. Configuration was not added!"}
-      String.contains? source, "config :phoenix_oauth2_provider," ->
-        {:error, "Configuration was not added because one already exists!"}
-      true ->
-        File.write!(config_file, source <> "\n" <> string)
-        {:ok, "Your #{config_file} file was updated, and deps has been recompiled."}
+    config_file
+    |> File.exists?()
+    |> maybe_check_existing(config_file)
+    |> maybe_write_config(string, config_file)
+  end
+
+  defp maybe_check_existing(false, config_file) do
+    {:error, "Could not find #{config_file}. Configuration was not added!"}
+  end
+  defp maybe_check_existing(true, config_file) do
+    source = File.read!(config_file)
+
+    case String.contains?(source, "config :phoenix_oauth2_provider,") do
+      true -> {:error, "Configuration was not added because one already exists!"}
+      false -> {:ok, source}
     end
   end
 
-  defp log_config(%{log_config?: false} = config) do
-    save_instructions config, ""
-  end
-  defp log_config(%{config_string: string, config_string: config_file} = config) do
-    verb = if config[:log_config] === :appended, do: "has been", else: "should be"
-    instructions = "The following #{verb} added to your #{config_file} file." <> string
+  defp maybe_write_config({:error, reason}, _string, _config_file), do: {:error, reason}
+  defp maybe_write_config({:ok, source}, string, config_file) do
+    File.write!(config_file, source <> "\n" <> string)
 
-    save_instructions config, instructions
+    {:ok, "Your #{config_file} file was updated, and deps has been recompiled."}
+  end
+
+  defp log_config(%{config_instructions?: false} = config), do: config
+  defp log_config(%{config_instructions?: true, config_string: string, config_file: config_file} = config) do
+    instructions = "Please add the following to your #{config_file} file." <> "\n\n" <> string
+
+    update_in(config, [:instructions], &(&1 <> instructions))
   end
 
   defp touch_config(%{config_file: config_file} = config) do
-    File.touch config_file
+    File.touch(config_file)
     config
   end
 
   ##################
   # ExOauth2Provider
 
-  defp install_ex_oauth2_provider(%{provider: true, repo: _repo, uuid: uuid} = config) do
-    opts = if is_nil(uuid), do: ~w(--no-config), else: ["--no-config", "--uuid", uuid]
-    install_ex_oauth2_provider_task(config, opts)
+  defp install_ex_oauth2_provider(%{provider: true, repo: _repo} = config) do
+    config
+    |> install_ex_oauth2_provider_task_args()
+    |> ExOAuth2ProviderInstall.run()
+
+    config
   end
   defp install_ex_oauth2_provider(config), do: config
-  defp install_ex_oauth2_provider_task(%{config_file: _config_file, repo: _repo} = config, opts) do
-    config
-    |> install_ex_oauth2_provider_task_args(opts)
-    |> Mix.Tasks.ExOauth2Provider.Install.run
-    config
+
+  defp install_ex_oauth2_provider_task_args(%{repo: repo} = config) do
+    ["--no-config", "--repo", repo]
+    |> ex_oauth2_provider_add_resource_owner_arg(config)
+    |> ex_oauth2_provider_add_uuid_arg(config)
+    |> ex_oauth2_provider_add_migrations_arg(config)
   end
 
-  defp install_ex_oauth2_provider_task_args(config, opts) do
-    ~w(--config-file #{config.config_file} --repo #{config.repo})
-    |> Enum.concat(opts)
-    |> add_resource_owner_arg(config)
+  defp ex_oauth2_provider_add_resource_owner_arg(args, %{resource_owner: resource_owner}) do
+    Enum.concat(args, ["--resource-owner", resource_owner])
   end
+  defp ex_oauth2_provider_add_resource_owner_arg(args, _config), do: args
 
-  defp add_resource_owner_arg(args, %{resource_owner: resource_owner}) do
-    args
-    |> Enum.concat(~w(--resource-owner=#{resource_owner}))
-  end
-  defp add_resource_owner_arg(args, _), do: args
+  defp ex_oauth2_provider_add_uuid_arg(args, %{uuid: nil}), do: args
+  defp ex_oauth2_provider_add_uuid_arg(args, %{uuid: uuid}), do: args ++ ["--uuid", uuid]
+
+  defp ex_oauth2_provider_add_migrations_arg(args, %{migrations: false}), do: args ++ ["--no-migrations"]
+  defp ex_oauth2_provider_add_migrations_arg(args, _config), do: args
 
   defp recompile_ex_oauth2_provider(%{provider: true} = config) do
-    try do
-      # Make sure that oauth2 uses the new config file
-      Mix.Task.run "deps.compile", ~w(ex_oauth2_provider --force)
-    rescue
-      e in Mix.Error -> Logger.warn(e.message)
-    end
+    # Make sure that oauth2 uses the new config file
+    Mix.Task.run("deps.compile", ~w(ex_oauth2_provider --force))
+
+    config
+  rescue
+    e in Mix.Error -> Logger.warn(e.message)
+
     config
   end
   defp recompile_ex_oauth2_provider(config), do: config
@@ -182,10 +202,11 @@ config :phoenix_oauth2_provider, PhoenixOauth2Provider,
   # Web
 
   defp gen_phoenix_oauth2_provider_web(%{web: true, boilerplate: true, binding: binding} = config) do
-    Mix.Phoenix.copy_from paths(),
-      "priv/boilerplate", binding, [
-        {:eex, "phoenix_oauth2_provider_web.ex", web_path("phoenix_oauth2_provider_web.ex")},
-      ]
+    source  = "priv/boilerplate"
+    mapping = [{:eex, "phoenix_oauth2_provider_web.ex", Utils.web_path("phoenix_oauth2_provider_web.ex")}]
+
+    Phoenix.copy_from(@apps, source, binding, mapping)
+
     config
   end
   defp gen_phoenix_oauth2_provider_web(config), do: config
@@ -194,36 +215,36 @@ config :phoenix_oauth2_provider, PhoenixOauth2Provider,
   # Views
 
   @view_files [
-    all: "phoenix_oauth2_provider_view.ex",
-    all: "layout_view.ex",
-    all: "phoenix_oauth2_provider_view_helpers.ex",
-    application: "application_view.ex",
-    authorization: "authorization_view.ex",
+    all:                    "phoenix_oauth2_provider_view.ex",
+    all:                    "layout_view.ex",
+    all:                    "phoenix_oauth2_provider_view_helpers.ex",
+    application:            "application_view.ex",
+    authorization:          "authorization_view.ex",
     authorized_application: "authorized_application_view.ex"
   ]
 
   defp gen_phoenix_oauth2_provider_views(%{views: true, boilerplate: true, binding: binding} = config) do
-    files = @view_files
-    |> Enum.filter(&(validate_option(config, elem(&1, 0))))
-    |> Enum.map(&(elem(&1, 1)))
-    |> Enum.map(&({:eex, &1, web_path("views/phoenix_oauth2_provider/#{&1}")}))
+    source  = "priv/boilerplate/views"
+    mapping = @view_files
+              |> Enum.filter(&(validate_option(config, elem(&1, 0))))
+              |> Enum.map(&(elem(&1, 1)))
+              |> Enum.map(&({:eex, &1, Utils.web_path("views/phoenix_oauth2_provider/#{&1}")}))
 
-    Mix.Phoenix.copy_from paths(), "priv/boilerplate/views", binding, files
+    Phoenix.copy_from(@apps, source, binding, mapping)
+
     config
   end
   defp gen_phoenix_oauth2_provider_views(config), do: config
 
   @template_files [
-    application: {:application, ~w(edit new form index show)},
-    authorization: {:authorization, ~w(error new show)},
+    application:            {:application, ~w(edit new form index show)},
+    authorization:          {:authorization, ~w(error new show)},
     authorized_application: {:authorized_application, ~w(index)},
-    layout: {:all, ~w(app)}
+    layout:                 {:all, ~w(app)}
   ]
 
   defp validate_option(_, :all), do: true
-  defp validate_option(%{opts: opts}, opt) do
-    if opt in opts, do: true, else: false
-  end
+  defp validate_option(%{opts: opts}, opt), do: Enum.member?(opts, opt)
 
   ################
   # Templates
@@ -232,18 +253,22 @@ config :phoenix_oauth2_provider, PhoenixOauth2Provider,
     for {name, {opt, files}} <- @template_files do
       if validate_option(config, opt), do: copy_templates(binding, name, files)
     end
+
     config
   end
   defp gen_phoenix_oauth2_provider_templates(config), do: config
 
   defp copy_templates(binding, name, file_list) do
-    Mix.Phoenix.copy_from paths(),
-      "priv/boilerplate/templates/#{name}", binding, copy_templates_files(name, file_list)
+    source  = "priv/boilerplate/templates/#{name}"
+    mapping = copy_templates_files(name, file_list)
+
+    Phoenix.copy_from(@apps, source, binding, mapping)
   end
+
   defp copy_templates_files(name, file_list) do
     for fname <- file_list do
       fname = "#{fname}.html.eex"
-      {:eex, fname, web_path("templates/phoenix_oauth2_provider/#{name}/#{fname}")}
+      {:eex, fname, Utils.web_path("templates/phoenix_oauth2_provider/#{name}/#{fname}")}
     end
   end
 
@@ -251,41 +276,44 @@ config :phoenix_oauth2_provider, PhoenixOauth2Provider,
   # Controllers
 
   @controller_files [
-    application: "application_controller.ex",
-    authorization: "authorization_controller.ex",
-    token: "token_controller.ex",
+    application:            "application_controller.ex",
+    authorization:          "authorization_controller.ex",
+    token:                  "token_controller.ex",
     authorized_application: "authorized_application_controller.ex"
-
   ]
 
   defp gen_phoenix_oauth2_provider_controllers(%{controllers: true, boilerplate: true, binding: binding, base: base} = config) do
-    files = @controller_files
-    |> Enum.filter(&(validate_option(config, elem(&1, 0))))
-    |> Enum.map(&(elem(&1, 1)))
-    |> Enum.map(&({:text, &1, web_path("controllers/phoenix_oauth2_provider/#{&1}")}))
+    source  = "priv/../lib/phoenix_oauth2_provider/web/controllers"
+    mapping = @controller_files
+              |> Enum.filter(&(validate_option(config, elem(&1, 0))))
+              |> Enum.map(&(elem(&1, 1)))
+              |> Enum.map(&({:text, &1, Utils.web_path("controllers/phoenix_oauth2_provider/#{&1}")}))
 
-    # Mix.Phoenix.copy_from paths(), "priv/boilerplate/views", binding, files
-    Mix.Phoenix.copy_from paths(),
-      "priv/../lib/phoenix_oauth2_provider/web/controllers", binding, files
-
-    files
-    |> Enum.map(fn({_, _, f}) -> {f, File.read!(f)} end)
-    |> Enum.each(fn({f, src}) ->
-      File.write!(f, String.replace(src, ~r/(defmodule )(PhoenixOauth2Provider\..*Controller)/, "\\1#{base}.\\2"))
-    end)
+    Phoenix.copy_from(@apps, source, binding, mapping)
+    Enum.each(mapping, &update_controller_file_with_base_module!(&1, base))
 
     config
   end
   defp gen_phoenix_oauth2_provider_controllers(config), do: config
 
+  defp update_controller_file_with_base_module!({_, _, file}, base) do
+    regex   = ~r/(defmodule )(PhoenixOauth2Provider\..*Controller)/
+    replace = "\\1#{base}.\\2"
+    content = file |> File.read!() |> String.replace(regex, replace)
+
+    File.write!(file, content)
+  end
+
   ################
   # Instructions
 
-  defp router_instructions(%{base: base, controllers: controllers}) do
-    namespace = if controllers, do: ", #{base}", else: ""
-
-    router_instruction(namespace, base)
+  defp router_instructions(%{base: base, controllers: true}) do
+    router_instruction(", #{base}", base)
   end
+  defp router_instructions(%{base: base}) do
+    router_instruction("", base)
+  end
+
   defp router_instruction(namespace, base) do
     """
     Configure your router.ex file the following way:
@@ -317,18 +345,18 @@ config :phoenix_oauth2_provider, PhoenixOauth2Provider,
     """
   end
 
-  defp migrate_instructions(%{boilerplate: true, migrations: true}) do
+  defp migrate_instructions(%{migrations: true}) do
     """
     Don't forget to run the new migrations and seeds with:
         $ mix ecto.setup
     """
   end
-  defp migrate_instructions(_), do: ""
+  defp migrate_instructions(_config), do: ""
 
   defp print_instructions(%{instructions: instructions} = config) do
-    Mix.shell.info instructions
-    Mix.shell.info router_instructions(config)
-    Mix.shell.info migrate_instructions(config)
+    Mix.shell.info(instructions)
+    Mix.shell.info(router_instructions(config))
+    Mix.shell.info(migrate_instructions(config))
 
     config
   end
@@ -338,33 +366,25 @@ config :phoenix_oauth2_provider, PhoenixOauth2Provider,
 
   defp do_default_config(config, opts) do
     @default_booleans
-    |> list_to_atoms
+    |> Utils.list_to_existing_atoms()
     |> Enum.reduce(config, fn opt, acc ->
-      Map.put acc, opt, Keyword.get(opts, opt, true)
+      Map.put(acc, opt, Keyword.get(opts, opt, true))
     end)
-  end
-
-  defp list_to_atoms(list), do: Enum.map(list, &(String.to_atom(&1)))
-
-  defp paths do
-    [".", :phoenix_oauth2_provider]
-  end
-
-  defp save_instructions(config, instructions) do
-    update_in config, [:instructions], &(&1 <> instructions)
   end
 
   ################
   # Installer Configuration
 
-  defp do_config(opts, []) do
-    do_config(opts, list_to_atoms(@default_options))
+  defp do_config({[], opts}) do
+    bin_opts = Utils.list_to_existing_atoms(@default_options)
+
+    do_config({bin_opts, opts})
   end
-  defp do_config(opts, bin_opts) do
-    binding = Mix.Project.config
-    |> Keyword.fetch!(:app)
-    |> Atom.to_string
-    |> Mix.Phoenix.inflect
+  defp do_config({bin_opts, opts}) do
+    binding = Project.config()
+              |> Keyword.fetch!(:app)
+              |> Atom.to_string()
+              |> Phoenix.inflect()
 
     base = opts[:module] || binding[:base]
     opts = Keyword.put(opts, :base, base)
@@ -372,8 +392,8 @@ config :phoenix_oauth2_provider, PhoenixOauth2Provider,
     resource_owner = opts[:resource_owner] || "#{base}.User"
     config_file = opts[:config_file] || @config_file
 
-    binding = Keyword.put binding, :base, base
-    binding = Keyword.put binding, :web_prefix, web_path("")
+    binding = Keyword.put(binding, :base, base)
+    binding = Keyword.put(binding, :web_prefix, Utils.web_path())
 
     bin_opts
     |> Enum.map(&({&1, true}))
@@ -393,56 +413,46 @@ config :phoenix_oauth2_provider, PhoenixOauth2Provider,
     |> do_default_config(opts)
   end
 
-  defp parse_options(opts) do
-    {opts_bin, opts} = reduce_options(opts)
+  defp parse_options({opts, _argv, _errors}) do
+    opts
+    |> reduce_options()
+    |> process_reduced_options()
+  end
+
+  defp reduce_options(opts) do
+    Enum.reduce(opts, {[], []}, &reduce_option/2)
+  end
+
+  defp reduce_option({:default, true}, {acc_bin, acc}),
+    do: {Utils.list_to_existing_atoms(@default_options) ++ acc_bin, acc}
+  defp reduce_option({:full, true}, {acc_bin, acc}),
+    do: {Utils.list_to_existing_atoms(@full_options) ++ acc_bin, acc}
+  defp reduce_option({name, true}, {acc_bin, acc}) when name in @all_options_atoms,
+    do: {[name | acc_bin], acc}
+  defp reduce_option({name, false}, {acc_bin, acc}) when name in @all_options_atoms,
+    do: {acc_bin -- [name], acc}
+  defp reduce_option(opt, {acc_bin, acc}), do: {acc_bin, [opt | acc]}
+
+  defp process_reduced_options({opts_bin, opts}) do
     opts_bin = Enum.uniq(opts_bin)
-    opts_names = Enum.map opts, &(elem(&1, 0))
+    opts_names = Enum.map(opts, &(elem(&1, 0)))
 
     with  [] <- Enum.filter(opts_bin, &(not &1 in @switch_names)),
           [] <- Enum.filter(opts_names, &(not &1 in @switch_names)) do
             {opts_bin, opts}
     else
-      list -> raise_option_errors(list)
-    end
-  end
-  defp reduce_options(opts) do
-    Enum.reduce opts, {[], []}, fn
-      {:default, true}, {acc_bin, acc} ->
-        {list_to_atoms(@default_options) ++ acc_bin, acc}
-      {:full, true}, {acc_bin, acc} ->
-        {list_to_atoms(@full_options) ++ acc_bin, acc}
-      {name, true}, {acc_bin, acc} when name in @all_options_atoms ->
-        {[name | acc_bin], acc}
-      {name, false}, {acc_bin, acc} when name in @all_options_atoms ->
-        {acc_bin -- [name], acc}
-      opt, {acc_bin, acc} ->
-        {acc_bin, [opt | acc]}
+      list -> Utils.raise_option_errors(list)
     end
   end
 
-  defp print_installed_options(_config) do
-    ["mix phoenix_oauth2_provider.install"]
-    |> list_config_options(Application.get_env(:phoenix_oauth2_provider, :opts, []))
-    |> Enum.reverse
+  defp print_installed_options(config) do
+    :phoenix_oauth2_provider
+    |> Application.get_env(:opts, [])
+    |> Utils.to_config_options(["mix phoenix_oauth2_provider.install"])
+    |> Enum.reverse()
     |> Enum.join(" ")
-    |> Mix.shell.info
-  end
+    |> Mix.shell.info()
 
-  defp list_config_options(acc, opts) do
-    opts
-    |> Enum.reduce(acc, &config_option/2)
-  end
-
-  defp config_option(opt, acc) do
-    str = opt
-    |> Atom.to_string
-    |> String.replace("_", "-")
-    ["--" <> str | acc]
-  end
-
-  defp web_path(path), do: Path.join(get_web_prefix(), path)
-  defp get_web_prefix do
-    Mix.Phoenix.otp_app()
-    |> Mix.Phoenix.web_path()
+    config
   end
 end

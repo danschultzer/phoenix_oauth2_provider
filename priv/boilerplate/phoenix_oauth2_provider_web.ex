@@ -11,7 +11,7 @@ defmodule <%= base %>.PhoenixOauth2Provider.Web do
       # Use all HTML functionality (forms, tags, etc)
       use Phoenix.HTML
 
-      import <%= base %>Web.Router.Helpers
+      alias <%= base %>Web.Router.Helpers, as: Routes
       import <%= base %>Web.ErrorHelpers
       import <%= base %>Web.Gettext
       import <%= base %>.PhoenixOauth2Provider.ViewHelpers

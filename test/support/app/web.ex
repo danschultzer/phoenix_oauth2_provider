@@ -3,7 +3,7 @@ defmodule PhoenixOauth2Provider.Test.PhoenixOauth2Provider.Web do
 
   def view do
     quote do
-      use Phoenix.View, root: "tmp/templates"
+      use Phoenix.View, root: "priv/test/tmp/templates"
 
       # Import convenience functions from controllers
       import Phoenix.Controller, only: [get_csrf_token: 0, get_flash: 2, view_module: 1]
@@ -11,7 +11,7 @@ defmodule PhoenixOauth2Provider.Test.PhoenixOauth2Provider.Web do
       # Use all HTML functionality (forms, tags, etc)
       use Phoenix.HTML
 
-      import PhoenixOauth2Provider.Test.Router.Helpers
+      alias PhoenixOauth2Provider.Test.Router.Helpers, as: Routes
 
       # Add view helpers including routes helpers
       import PhoenixOauth2Provider.ViewHelpers

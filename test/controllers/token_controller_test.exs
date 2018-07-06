@@ -1,25 +1,19 @@
 defmodule PhoenixOauth2Provider.TokenControllerTest do
   use PhoenixOauth2Provider.Test.ConnCase
-
-  import PhoenixOauth2Provider.Test.Fixture
-
-  def last_access_token do
-    ExOauth2Provider.OauthAccessTokens.OauthAccessToken
-    |> ExOauth2Provider.repo.all()
-    |> List.last()
-    |> Map.get(:token)
-  end
+  alias PhoenixOauth2Provider.Test.Fixtures
+  alias ExOauth2Provider.{OauthAccessTokens,
+                          OauthAccessTokens.OauthAccessToken}
 
   setup %{conn: conn} do
-    application = fixture(:application, %{user: fixture(:user)})
+    application = Fixtures.application(%{user: Fixtures.user()})
 
     {:ok, conn: conn, application: application}
   end
 
   describe "with authorization_code strategy" do
     setup %{conn: conn, application: application} do
-      user = fixture(:user)
-      access_grant = fixture(:access_grant, %{user: user, application: application})
+      user = Fixtures.user()
+      access_grant = Fixtures.access_grant(%{user: user, application: application})
       request = %{client_id: application.uid,
                   client_secret: application.secret,
                   grant_type: "authorization_code",
@@ -30,13 +24,13 @@ defmodule PhoenixOauth2Provider.TokenControllerTest do
     end
 
     test "create/2", %{conn: conn, request: request} do
-      conn = post conn, oauth_token_path(conn, :create, request)
+      conn = post conn, Routes.oauth_token_path(conn, :create, request)
       body = json_response(conn, 200)
       assert last_access_token() == body["access_token"]
     end
 
     test "create/2 with error", %{conn: conn, request: request} do
-      conn = post conn, oauth_token_path(conn, :create), Map.merge(request, %{redirect_uri: "invalid"})
+      conn = post conn, Routes.oauth_token_path(conn, :create), Map.merge(request, %{redirect_uri: "invalid"})
       body = json_response(conn, 422)
       assert "The provided authorization grant is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client." == body["error_description"]
     end
@@ -52,7 +46,7 @@ defmodule PhoenixOauth2Provider.TokenControllerTest do
     end
 
     test "create/2", %{conn: conn, request: request} do
-      conn = post conn, oauth_token_path(conn, :create, request)
+      conn = post conn, Routes.oauth_token_path(conn, :create, request)
 
       body = json_response(conn, 200)
       assert last_access_token() == body["access_token"]
@@ -60,7 +54,7 @@ defmodule PhoenixOauth2Provider.TokenControllerTest do
     end
 
     test "create/2 with error", %{conn: conn, request: request} do
-      conn = post conn, oauth_token_path(conn, :create, Map.merge(request, %{client_id: "invalid"}))
+      conn = post conn, Routes.oauth_token_path(conn, :create, Map.merge(request, %{client_id: "invalid"}))
       body = json_response(conn, 422)
       assert "Client authentication failed due to unknown client, no client authentication included, or unsupported authentication method." == body["error_description"]
     end
@@ -68,8 +62,8 @@ defmodule PhoenixOauth2Provider.TokenControllerTest do
 
   describe "as refresh_token strategy" do
     setup %{conn: conn, application: application} do
-      user = fixture(:user)
-      access_token = fixture(:access_token, %{application: application, user: user, use_refresh_token: true})
+      user = Fixtures.user()
+      access_token = Fixtures.access_token(%{application: application, user: user, use_refresh_token: true})
       request = %{client_id: application.uid,
                   client_secret: application.secret,
                   grant_type: "refresh_token",
@@ -79,7 +73,7 @@ defmodule PhoenixOauth2Provider.TokenControllerTest do
     end
 
     test "create/2", %{conn: conn, request: request} do
-      conn = post conn, oauth_token_path(conn, :create, request)
+      conn = post conn, Routes.oauth_token_path(conn, :create, request)
 
       body = json_response(conn, 200)
       assert last_access_token() == body["access_token"]
@@ -87,7 +81,7 @@ defmodule PhoenixOauth2Provider.TokenControllerTest do
     end
 
     test "create/2 with error", %{conn: conn, request: request} do
-      conn = post conn, oauth_token_path(conn, :create, Map.merge(request, %{client_id: "invalid"}))
+      conn = post conn, Routes.oauth_token_path(conn, :create, Map.merge(request, %{client_id: "invalid"}))
       body = json_response(conn, 422)
       assert "Client authentication failed due to unknown client, no client authentication included, or unsupported authentication method." == body["error_description"]
     end
@@ -95,8 +89,8 @@ defmodule PhoenixOauth2Provider.TokenControllerTest do
 
   describe "with revocation strategy" do
     setup %{conn: conn, application: application} do
-      user = fixture(:user)
-      access_token = fixture(:access_token, %{application: application, user: user})
+      user = Fixtures.user()
+      access_token = Fixtures.access_token(%{application: application, user: user})
       request = %{client_id: application.uid,
                   client_secret: application.secret,
                   token: access_token.token}
@@ -105,16 +99,23 @@ defmodule PhoenixOauth2Provider.TokenControllerTest do
     end
 
     test "revoke/2", %{conn: conn, request: request} do
-      conn = post conn, oauth_token_path(conn, :revoke, request)
+      conn = post conn, Routes.oauth_token_path(conn, :revoke, request)
       body = json_response(conn, 200)
       assert body == %{}
-      assert ExOauth2Provider.OauthAccessTokens.is_revoked?(last_access_token())
+      assert OauthAccessTokens.is_revoked?(last_access_token())
     end
 
     test "revoke/2 with invalid token", %{conn: conn, request: request} do
-      conn = post conn, oauth_token_path(conn, :revoke, Map.merge(request, %{token: "invalid"}))
+      conn = post conn, Routes.oauth_token_path(conn, :revoke, Map.merge(request, %{token: "invalid"}))
       body = json_response(conn, 200)
       assert body == %{}
     end
+  end
+
+  defp last_access_token do
+    OauthAccessToken
+    |> ExOauth2Provider.repo.all()
+    |> List.last()
+    |> Map.get(:token)
   end
 end

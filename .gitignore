@@ -8,4 +8,4 @@ erl_crash.dump
 
 /priv/test/migrations/*
 !/priv/test/migrations/20170320052040_create_user.exs
-/tmp
+/priv/test/tmp
