@@ -1,8 +1,7 @@
 defmodule PhoenixOauth2Provider.AuthorizationControllerTest do
   use PhoenixOauth2Provider.Test.ConnCase
-
   alias ExOauth2Provider.OauthApplications
-  import PhoenixOauth2Provider.Test.Fixture
+  alias PhoenixOauth2Provider.Test.Fixtures
 
   def valid_request(%OauthApplications.OauthApplication{} = application) do
     %{client_id: application.uid, response_type: "code"}
@@ -19,13 +18,13 @@ defmodule PhoenixOauth2Provider.AuthorizationControllerTest do
   end
 
   setup %{conn: conn} do
-    user = fixture(:user)
+    user = Fixtures.user()
     conn = assign conn, :current_test_user, user
     {:ok, conn: conn, user: user}
   end
 
   test "new/2 renders authorization form", %{conn: conn, user: user} do
-    application = fixture(:application, %{user: user})
+    application = Fixtures.application(%{user: user})
 
     conn = get conn, oauth_authorization_path(conn, :new, valid_request(application))
     body = html_response(conn, 200)
@@ -45,21 +44,21 @@ defmodule PhoenixOauth2Provider.AuthorizationControllerTest do
   end
 
   test "new/2 redirects with error", %{conn: conn, user: user} do
-    application = fixture(:application, %{user: user})
+    application = Fixtures.application(%{user: user})
     conn = get conn, oauth_authorization_path(conn, :new, %{client_id: application.uid, response_type: "other"})
     assert redirected_to(conn) == "https://example.com?error=unsupported_response_type&error_description=The+authorization+server+does+not+support+this+response+type."
   end
 
   test "new/2 with matching access token redirects when already shown", %{conn: conn, user: user} do
-    application = fixture(:application, %{user: user})
-    fixture(:access_token, %{user: user, application: application})
+    application = Fixtures.application(%{user: user})
+    Fixtures.access_token(%{user: user, application: application})
 
     conn = get conn, oauth_authorization_path(conn, :new, valid_request(application))
     assert redirected_to(conn) == "https://example.com?code=#{last_grant_token()}"
   end
 
   test "create/2 redirects", %{conn: conn, user: user} do
-    application = fixture(:application, %{user: user})
+    application = Fixtures.application(%{user: user})
     conn = post conn, oauth_authorization_path(conn, :create, valid_request(application))
     assert redirected_to(conn) == "https://example.com?code=#{last_grant_token()}"
 
@@ -67,20 +66,20 @@ defmodule PhoenixOauth2Provider.AuthorizationControllerTest do
   end
 
   test "delete/2 redirects", %{conn: conn, user: user} do
-    application = fixture(:application, %{user: user})
+    application = Fixtures.application(%{user: user})
     conn = delete conn, oauth_authorization_path(conn, :delete, valid_request(application))
     assert redirected_to(conn) == "https://example.com?error=access_denied&error_description=The+resource+owner+or+authorization+server+denied+the+request."
   end
 
   describe "application with native redirect uri" do
     setup %{conn: conn, user: user} do
-      application = fixture(:application, %{user: user, redirect_uri: "urn:ietf:wg:oauth:2.0:oob"})
+      application = Fixtures.application(%{user: user, redirect_uri: "urn:ietf:wg:oauth:2.0:oob"})
 
       {:ok, conn: conn, user: user, application: application}
     end
 
     test "new/2 redirects to native", %{conn: conn, user: user, application: application} do
-      fixture(:access_token, %{user: user, application: application})
+      Fixtures.access_token(%{user: user, application: application})
 
       conn = get conn, oauth_authorization_path(conn, :new, valid_request(application))
       assert redirected_to(conn) == oauth_authorization_path(conn, :show, last_grant_token())

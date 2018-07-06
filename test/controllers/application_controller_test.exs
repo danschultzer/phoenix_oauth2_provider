@@ -1,21 +1,20 @@
 defmodule PhoenixOauth2Provider.ApplicationControllerTest do
   use PhoenixOauth2Provider.Test.ConnCase
-
-  import PhoenixOauth2Provider.Test.Fixture
+  alias PhoenixOauth2Provider.Test.Fixtures
 
   @create_attrs %{name: "Example", redirect_uri: "https://example.com"}
   @update_attrs %{name: "some updated name"}
   @invalid_attrs %{name: nil}
 
   setup %{conn: conn} do
-    user = fixture(:user)
+    user = Fixtures.user()
     conn = assign conn, :current_test_user, user
     {:ok, conn: conn, user: user}
   end
 
   test "index/2 lists all entries on index", %{conn: conn, user: user} do
-    application1 = fixture(:application, %{user: user, name: "Application 1"})
-    application2 = fixture(:application, %{user: fixture(:user), name: "Application 2"})
+    application1 = Fixtures.application(%{user: user, name: "Application 1"})
+    application2 = Fixtures.application(%{user: Fixtures.user(), name: "Application 2"})
 
     conn = get conn, oauth_application_path(conn, :index)
     body = html_response(conn, 200)
@@ -46,13 +45,13 @@ defmodule PhoenixOauth2Provider.ApplicationControllerTest do
   end
 
   test "edit/2 renders form for editing chosen application", %{conn: conn, user: user} do
-    application = fixture(:application, %{user: user})
+    application = Fixtures.application(%{user: user})
     conn = get conn, oauth_application_path(conn, :edit, application)
     assert html_response(conn, 200) =~ "Edit Application"
   end
 
   test "update/2 updates chosen application and redirects when data is valid", %{conn: conn, user: user} do
-    application = fixture(:application, %{user: user})
+    application = Fixtures.application(%{user: user})
     new_conn = put conn, oauth_application_path(conn, :update, application), oauth_application: @update_attrs
     assert redirected_to(new_conn) == oauth_application_path(new_conn, :show, application)
 
@@ -61,13 +60,13 @@ defmodule PhoenixOauth2Provider.ApplicationControllerTest do
   end
 
   test "update/2 does not update chosen application and renders errors when data is invalid", %{conn: conn, user: user} do
-    application = fixture(:application, %{user: user})
+    application = Fixtures.application(%{user: user})
     conn = put conn, oauth_application_path(conn, :update, application), oauth_application: @invalid_attrs
     assert html_response(conn, 200) =~ "Edit Application"
   end
 
   test "delete/2 deletes chosen application", %{conn: conn, user: user} do
-    application = fixture(:application, %{user: user})
+    application = Fixtures.application(%{user: user})
     new_conn = delete conn, oauth_application_path(conn, :delete, application)
     assert redirected_to(new_conn) == oauth_application_path(new_conn, :index)
 

@@ -1,7 +1,6 @@
 defmodule PhoenixOauth2Provider.TokenControllerTest do
   use PhoenixOauth2Provider.Test.ConnCase
-
-  import PhoenixOauth2Provider.Test.Fixture
+  alias PhoenixOauth2Provider.Test.Fixtures
 
   def last_access_token do
     ExOauth2Provider.OauthAccessTokens.OauthAccessToken
@@ -11,15 +10,15 @@ defmodule PhoenixOauth2Provider.TokenControllerTest do
   end
 
   setup %{conn: conn} do
-    application = fixture(:application, %{user: fixture(:user)})
+    application = Fixtures.application(%{user: Fixtures.user()})
 
     {:ok, conn: conn, application: application}
   end
 
   describe "with authorization_code strategy" do
     setup %{conn: conn, application: application} do
-      user = fixture(:user)
-      access_grant = fixture(:access_grant, %{user: user, application: application})
+      user = Fixtures.user()
+      access_grant = Fixtures.access_grant(%{user: user, application: application})
       request = %{client_id: application.uid,
                   client_secret: application.secret,
                   grant_type: "authorization_code",
@@ -68,8 +67,8 @@ defmodule PhoenixOauth2Provider.TokenControllerTest do
 
   describe "as refresh_token strategy" do
     setup %{conn: conn, application: application} do
-      user = fixture(:user)
-      access_token = fixture(:access_token, %{application: application, user: user, use_refresh_token: true})
+      user = Fixtures.user()
+      access_token = Fixtures.access_token(%{application: application, user: user, use_refresh_token: true})
       request = %{client_id: application.uid,
                   client_secret: application.secret,
                   grant_type: "refresh_token",
@@ -95,8 +94,8 @@ defmodule PhoenixOauth2Provider.TokenControllerTest do
 
   describe "with revocation strategy" do
     setup %{conn: conn, application: application} do
-      user = fixture(:user)
-      access_token = fixture(:access_token, %{application: application, user: user})
+      user = Fixtures.user()
+      access_token = Fixtures.access_token(%{application: application, user: user})
       request = %{client_id: application.uid,
                   client_secret: application.secret,
                   token: access_token.token}
