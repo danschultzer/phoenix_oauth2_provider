@@ -32,10 +32,10 @@ defmodule PhoenixOauth2Provider.Router do
       end
   """
 
-  alias PhoenixOauth2Provider.AuthorizationController
-  alias PhoenixOauth2Provider.ApplicationController
-  alias PhoenixOauth2Provider.TokenController
-  alias PhoenixOauth2Provider.AuthorizedApplicationController
+  alias PhoenixOauth2Provider.{AuthorizationController,
+                               ApplicationController,
+                               TokenController,
+                               AuthorizedApplicationController}
 
   defmacro __using__(_opts \\ []) do
     quote do
