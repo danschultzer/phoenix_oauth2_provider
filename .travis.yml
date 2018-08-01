@@ -1,20 +1,22 @@
 language: elixir
-elixir:
-  - 1.5
-  - 1.4
-otp_release:
-  - 19.0
-env:
-  - MIX_ENV=test
-  - UUID=resource_owners MIX_ENV=test
-  - UUID=all MIX_ENV=test
 sudo: false
 matrix:
-  exclude:
+  include:
     - elixir: 1.4
-      env: UUID=resource_owners MIX_ENV=test
-    - elixir: 1.4
-      env: UUID=all MIX_ENV=test
+      otp_release: 19.0
+      env: MIX_ENV=test
+    - elixir: 1.5
+      otp_release: 19.0
+      env: MIX_ENV=test
+    - elixir: 1.6
+      otp_release: 20.0
+      env: MIX_ENV=test
+    - elixir: 1.7
+      otp_release: 20.0
+      env: MIX_ENV=test UUID=resource_owners
+    - elixir: 1.7
+      otp_release: 20.0
+      env: MIX_ENV=test UUID=all
 script:
   - mix deps.compile
   - mix test
