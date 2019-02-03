@@ -11,7 +11,6 @@ config :phoenix_oauth2_provider, PhoenixOauth2Provider,
 
 config :phoenix_oauth2_provider, ecto_repos: [PhoenixOauth2Provider.Test.Repo]
 config :phoenix_oauth2_provider, PhoenixOauth2Provider.Test.Repo,
-  adapter: Ecto.Adapters.Postgres,
   database: "phoenix_oauth2_provider_test",
   pool: Ecto.Adapters.SQL.Sandbox,
   priv: "priv/test"
@@ -28,3 +27,5 @@ if System.get_env("UUID") == "all" do
 config :phoenix_oauth2_provider, PhoenixOauth2Provider,
   app_schema: ExOauth2Provider.Schema.UUID
 end
+
+config :phoenix, :json_library, Jason

@@ -1,7 +1,7 @@
 defmodule PhoenixOauth2Provider.Mixfile do
   use Mix.Project
 
-  @version "0.4.1"
+  @version "0.5.0"
 
   def project do
     [app: :phoenix_oauth2_provider,
@@ -39,12 +39,16 @@ defmodule PhoenixOauth2Provider.Mixfile do
 
   defp deps do
     [
-      {:ex_oauth2_provider, "~> 0.4"},
+      # {:ex_oauth2_provider, "~> 0.4.4"},
+      {:ex_oauth2_provider, github: "danschultzer/ex_oauth2_provider"},
       {:gettext, ">= 0.13.0"},
-      {:phoenix, "~> 1.3"},
-      {:phoenix_ecto, "~> 3.2 or ~> 3.3", only: [:test, :dev]},
-      {:phoenix_html, ">= 2.6.0 and < 2.12.0", only: [:test, :dev]},
-      {:postgrex, ">= 0.11.1", only: :test},
+      {:phoenix, "~> 1.4"},
+
+      {:ecto_sql, "~> 3.0.0", only: [:test]},
+      {:plug_cowboy, "~> 2.0", only: [:test]},
+      {:phoenix_ecto, "~> 4.0", only: [:test, :dev]},
+      {:phoenix_html, "~> 2.13.0", only: [:test, :dev]},
+      {:postgrex, ">= 0.14.0", only: :test},
       {:credo, "~> 0.10", only: [:dev, :test]},
       {:ex_doc, ">= 0.0.0", only: :dev}
     ]

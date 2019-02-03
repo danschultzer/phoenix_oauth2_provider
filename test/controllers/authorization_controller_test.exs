@@ -1,7 +1,6 @@
 defmodule PhoenixOauth2Provider.AuthorizationControllerTest do
   use PhoenixOauth2Provider.Test.ConnCase
   alias ExOauth2Provider.{OauthAccessGrants.OauthAccessGrant,
-                          OauthApplications,
                           Scopes}
   alias PhoenixOauth2Provider.Test.Fixtures
 

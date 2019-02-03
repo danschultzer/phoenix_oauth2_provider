@@ -1,6 +1,6 @@
 <h2>Your applications</h2>
 
-<table class="table">
+<table>
   <thead>
     <tr>
       <th>Name</th>
@@ -16,9 +16,9 @@
       <td><%%= link application.name, to: Routes.oauth_application_path(@conn, :show, application) %></td>
       <td><%%= application.redirect_uri %></td>
 
-      <td class="text-right">
-        <span><%%= link "Edit", to: Routes.oauth_application_path(@conn, :edit, application), class: "btn btn-default btn-xs" %></span>
-        <span><%%= link "Delete", to: Routes.oauth_application_path(@conn, :delete, application), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %></span>
+      <td>
+        <span><%%= link "Edit", to: Routes.oauth_application_path(@conn, :edit, application), class: "button button-outline" %></span>
+        <span><%%= link "Delete", to: Routes.oauth_application_path(@conn, :delete, application), method: :delete, data: [confirm: "Are you sure?"], class: "button" %></span>
       </td>
     </tr>
 <%% end %>

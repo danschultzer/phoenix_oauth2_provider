@@ -16,7 +16,7 @@
   </li>
   <li>
     <strong>Callback urls:</strong>
-    <table class="table">
+    <table>
       <tbody>
     <%%= for redirect_uri <- String.split(@application.redirect_uri) do %>
         <tr>

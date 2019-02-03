@@ -11,9 +11,9 @@ defmodule PhoenixOauth2Provider.ViewHelpers do
   """
   @spec error_tag(Changeset.t(), atom()) :: HTML.safe() | nil
   def error_tag(form, field) do
-    if error = form.errors[field] do
+    Enum.map(Keyword.get_values(form.errors, field), fn error ->
       content_tag(:span, translate_error(error), class: "help-block")
-    end
+    end)
   end
 
   @doc """
@@ -21,19 +21,27 @@ defmodule PhoenixOauth2Provider.ViewHelpers do
   """
   @spec translate_error({binary(), Keyword.t()}) :: binary()
   def translate_error({msg, opts}) do
-    # Because error messages were defined within Ecto, we must
-    # call the Gettext module passing our Gettext backend. We
-    # also use the "errors" domain as translations are placed
-    # in the errors.po file. On your own code and templates,
-    # this could be written simply as:
+    # When using gettext, we typically pass the strings we want
+    # to translate as a static argument:
     #
-    #     dngettext "errors", "1 file", "%{count} files", count
+    #     # Translate "is invalid" in the "errors" domain
+    #     dgettext("errors", "is invalid")
     #
-    Gettext.dngettext(PhoenixOauth2Provider.Web.Gettext, "errors", msg, msg, opts[:count] || 0, opts)
-  end
-
-  @spec translate_error(binary()) :: binary()
-  def translate_error(msg) do
-    Gettext.dgettext(PhoenixOauth2Provider.Web.Gettext, "errors", msg)
+    #     # Translate the number of files with plural rules
+    #     dngettext("errors", "1 file", "%{count} files", count)
+    #
+    # Because the error messages we show in our forms and APIs
+    # are defined inside Ecto, we need to translate them dynamically.
+    # This requires us to call the Gettext module passing our gettext
+    # backend as first argument.
+    #
+    # Note we use the "errors" domain, which means translations
+    # should be written to the errors.po file. The :count option is
+    # set by Ecto and indicates we should also apply plural rules.
+    if count = opts[:count] do
+      Gettext.dngettext(PhoenixOauth2Provider.Web.Gettext, "errors", msg, msg, count, opts)
+    else
+      Gettext.dgettext(PhoenixOauth2Provider.Web.Gettext, "errors", msg, opts)
+    end
   end
 end
