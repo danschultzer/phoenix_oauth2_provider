@@ -72,12 +72,12 @@ Please read the [ex_oauth2_provider](https://github.com/danschultzer/ex_oauth2_p
 
 ### Resource owner schema
 
-By default `MyApp.User` is used as the `resource_owner`, you can change that in the following way:
+By default `MyApp.Users.User` is used as the `resource_owner`, you can change that in the following way:
 
 ```elixir
 config :phoenix_oauth2_provider, PhoenixOauth2Provider,
   repo: MyApp.Repo,
-  resource_owner: MyApp.CustomUser
+  resource_owner: MyApp.CustomUsers.CustomUser
 ```
 
 ### Resource owner

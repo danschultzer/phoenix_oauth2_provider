@@ -21,7 +21,7 @@ defmodule Mix.Tasks.PhoenixOauth2Provider.Install do
   ## Option list
     * A PhoenixOauth2Provider configuration will be appended to your `config/config.exs` file unless
     the `--no-config` option is given.
-    * A `--resource-owner MyApp.User` option can be given to override the default resource owner module in config.
+    * A `--resource-owner MyApp.Users.User` option can be given to override the default resource owner module in config.
     * A `--repo MyApp.Repo` option can be given to override the default Repo module.
     * A `--config-file config/config.exs` option can be given to change what config file to append to.
     * A `--controllers` option to generate controllers boilerplate (not default).
