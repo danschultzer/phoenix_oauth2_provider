@@ -41,17 +41,13 @@ defmodule MyAppWeb.Router do
     # Require user authentication
   end
 
-  pipeline :oauth_public do
-    plug :put_secure_browser_headers
-  end
-
   scope "/", MyAppWeb do
-    pipe_through :oauth_public
+    pipe_through :browser
     oauth_routes :public
   end
 
   scope "/", MyAppWeb do
-    pipe_through :protected
+    pipe_through [:browser, :protected]
     oauth_routes :protected
   end
 

@@ -326,18 +326,13 @@ defmodule Mix.Tasks.PhoenixOauth2Provider.Install do
         # Require user authentication
       end
 
-      # Don't require CSRF protection
-      pipeline :oauth_public do
-        plug :put_secure_browser_headers
-      end
-
       scope "/"#{namespace} do
-        pipe_through :oauth_public
+        pipe_through :browser
         oauth_routes :public
       end
 
       scope "/"#{namespace} do
-        pipe_through :protected
+        pipe_through [:browser, :protected]
         oauth_routes :protected
       end
       ...
