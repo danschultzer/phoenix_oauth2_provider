@@ -48,8 +48,10 @@ defmodule PhoenixOauth2Provider do
   end
 
   defp web_module do
-    config()
-    |> Keyword.get(:module, Phoenix.base())
+    # TODO: Rewrite this to reflect Phoenix 1.4 handling of context app
+    context_app = Keyword.get(config(), :module) || Phoenix.base()
+
+    context_app
     |> Kernel.to_string()
     |> Kernel.<>("Web")
   end
