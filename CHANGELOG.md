@@ -1,12 +1,12 @@
 # Changelog
 
-## v0.5.0 (TBA)
+## v0.5.0 (2019-05-08)
 
 This is a full rewrite of the library, and are several breaking changes. You're encouraged to test your app well if you upgrade from 0.4.x.
 
 ### 1. ExOauth2Provider
 
-Read the [ExOauth2Provider CHANGELOG.md](https://github.com/danschultzer/ex_oauth2_provider) for upgrade instructions.
+Read the [ExOauth2Provider](https://github.com/danschultzer/ex_oauth2_provider) CHANGELOG.md for upgrade instructions.
 
 ### 2. Routes
 
