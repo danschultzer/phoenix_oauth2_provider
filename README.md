@@ -2,9 +2,7 @@
 
 [![Build Status](https://travis-ci.org/danschultzer/phoenix_oauth2_provider.svg?branch=master)](https://travis-ci.org/danschultzer/phoenix_oauth2_provider) [![hex.pm](http://img.shields.io/hexpm/v/phoenix_oauth2_provider.svg?style=flat)](https://hex.pm/packages/phoenix_oauth2_provider) [![hex.pm downloads](https://img.shields.io/hexpm/dt/phoenix_oauth2_provider.svg?style=flat)](https://hex.pm/packages/phoenix_oauth2_provider)
 
-Get an OAuth 2 provider running in your Phoenix app with controllers, views and models in just two minutes.
-
-> This version requires Phoenix 1.3 or higher. If you use a previous Phoenix version, please use v0.2.0 instead.
+Get an OAuth 2.0 provider running in your Phoenix app with schema modules and templates in just two minutes.
 
 ## Installation
 
@@ -22,11 +20,15 @@ end
 
 Run `mix deps.get` to install it.
 
-Add migrations and set up `config/config.exs`:
+## Getting started
+
+Install ExOauthProvider first:
 
 ```bash
-mix phoenix_oauth2_provider.install
+mix ex_oauth2_provider.install
 ```
+
+Follow the instructions to update `config/config.exs`.
 
 Set up routes:
 
@@ -41,18 +43,16 @@ defmodule MyAppWeb.Router do
     # Require user authentication
   end
 
-  pipeline :oauth_public do
-    plug :put_secure_browser_headers
+  scope "/" do
+    pipe_through :api
+
+    oauth_api_routes()
   end
 
-  scope "/", MyAppWeb do
-    pipe_through :oauth_public
-    oauth_routes :public
-  end
+  scope "/" do
+    pipe_through [:browser, :protected]
 
-  scope "/", MyAppWeb do
-    pipe_through :protected
-    oauth_routes :protected
+    oauth_routes()
   end
 
   # ...
@@ -61,7 +61,7 @@ end
 
 That's it! The following OAuth 2.0 routes will now be available in your app:
 
-```
+```text
 oauth_authorize_path  GET    /oauth/authorize         AuthorizationController :new
 oauth_authorize_path  POST   /oauth/authorize         AuthorizationController :create
 oauth_authorize_path  GET    /oauth/authorize/:code   AuthorizationController :show
@@ -70,32 +70,33 @@ oauth_token_path      POST   /oauth/token             TokenController :create
 oauth_token_path      POST   /oauth/revoke            TokenController :revoke
 ```
 
-Please read the [ex_oauth2_provider](https://github.com/danschultzer/ex_oauth2_provider) documentation for further customization.
+Please read the [ExOauth2Provider](https://github.com/danschultzer/ex_oauth2_provider) documentation for further customization.
 
 ## Configuration
 
-### Resource owner schema
+### Templates
 
-By default `MyApp.User` is used as the `resource_owner`, you can change that in the following way:
+To generate views and templates run:
 
-```elixir
-config :phoenix_oauth2_provider, PhoenixOauth2Provider,
-  repo: MyApp.Repo,
-  resource_owner: MyApp.CustomUser
+```bash
+mix phoenix_oauth2_provider.gen.templates
 ```
 
-### Resource owner
-
-Set up what `assigns` in the plug that PhoenixOauth2Provider should gather the authorized user from.
+Set up the PhoenixOauth2Provider configuration with `:web_module`:
 
 ```elixir
-config :phoenix_oauth2_provider, PhoenixOauth2Provider,
+config :my_app, PhoenixOauth2Provider,
+  web_module: MyAppWeb
+```
+
+### Current resource owner
+
+Set up what key in the plug conn `assigns` that PhoenixOauth2Provider should use to fetch the current resource owner.
+
+```elixir
+config :my_app, PhoenixOauth2Provider,
   current_resource_owner: :current_user
 ```
-
-## Acknowledgement
-
-This library was made thanks to [coherence](https://github.com/smpallen99/coherence) that gave the conceptual building blocks.
 
 ## LICENSE
 
