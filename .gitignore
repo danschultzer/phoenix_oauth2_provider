@@ -5,7 +5,6 @@
 /.fetch
 erl_crash.dump
 *.ez
-
-/priv/test/migrations/*
-!/priv/test/migrations/20170320052040_create_user.exs
-/priv/test/tmp
+/tmp
+.DS_Store
+/.elixir_ls

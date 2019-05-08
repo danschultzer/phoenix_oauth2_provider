@@ -1,30 +1,23 @@
 use Mix.Config
 
-config :phoenix_oauth2_provider, PhoenixOauth2Provider,
-  module: PhoenixOauth2Provider.Test,
-  current_resource_owner: :current_test_user,
-  repo: PhoenixOauth2Provider.Test.Repo,
-  resource_owner: PhoenixOauth2Provider.Test.User,
-  scopes: ~w(read write),
-  router: PhoenixOauth2Provider.Test.Router,
-  use_refresh_token: true
+config :phoenix, :json_library, Jason
 
-config :phoenix_oauth2_provider, ecto_repos: [PhoenixOauth2Provider.Test.Repo]
-config :phoenix_oauth2_provider, PhoenixOauth2Provider.Test.Repo,
-  adapter: Ecto.Adapters.Postgres,
+config :phoenix_oauth2_provider, namespace: Dummy
+
+config :phoenix_oauth2_provider, DummyWeb.Endpoint,
+  secret_key_base: "1lJGFCaor+gPGc21GCvn+NE0WDOA5ujAMeZoy7oC5un7NPUXDir8LAE+Iba5bpGH",
+  render_errors: [view: DummyWeb.ErrorView, accepts: ~w(html json)]
+
+config :phoenix_oauth2_provider, Dummy.Repo,
   database: "phoenix_oauth2_provider_test",
   pool: Ecto.Adapters.SQL.Sandbox,
-  priv: "priv/test"
-config :phoenix_oauth2_provider, PhoenixOauth2Provider.Test.Endpoint,
-  secret_key_base: "1lJGFCaor+gPGc21GCvn+NE0WDOA5ujAMeZoy7oC5un7NPUXDir8LAE+Iba5bpGH",
-  render_errors: [view: PhoenixOauth2Provider.Test.ErrorView, accepts: ~w(html json)]
+  priv: "test/support/priv"
 
-unless is_nil(System.get_env("UUID")) do
-config :phoenix_oauth2_provider, PhoenixOauth2Provider,
-  resource_owner: {PhoenixOauth2Provider.Test.User, :binary_id}
-end
+config :phoenix_oauth2_provider, ExOauth2Provider,
+  repo: Dummy.Repo,
+  resource_owner: Dummy.Users.User,
+  scopes: ~w(read write),
+  use_refresh_token: true
 
-if System.get_env("UUID") == "all" do
 config :phoenix_oauth2_provider, PhoenixOauth2Provider,
-  app_schema: ExOauth2Provider.Schema.UUID
-end
+  current_resource_owner: :current_test_user

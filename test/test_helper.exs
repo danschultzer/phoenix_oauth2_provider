@@ -1,39 +1,21 @@
-alias PhoenixOauth2Provider.Test.{Endpoint, MixHelpers, Repo}
+Logger.configure(level: :warn)
+
 ExUnit.start()
 
-install_opts = "UUID"
-               |> System.get_env()
-               |> case do
-                    nil -> []
-                    uuid -> ["--uuid", uuid]
-                  end
-               |> Enum.concat(["--no-config"])
+# Ensure that symlink to custom ecto priv directory exists
+source = Dummy.Repo.config()[:priv]
+target = Application.app_dir(:phoenix_oauth2_provider, source)
+File.rm_rf(target)
+File.mkdir_p(target)
+File.rmdir(target)
+:ok = :file.make_symlink(Path.expand(source), target)
 
-Mix.shell.cmd("rm priv/test/migrations/*_create_oauth_tables.exs")
-Mix.Task.run("ex_oauth2_provider.install", install_opts)
-Mix.Task.run("ecto.create", ~w(--quiet))
-Mix.Task.run("ecto.migrate")
+# Set up database
+Mix.Task.run("ecto.drop", ~w(--quiet -r Dummy.Repo))
+Mix.Task.run("ecto.create", ~w(--quiet -r Dummy.Repo))
+Mix.Task.run("ecto.migrate", ~w(-r Dummy.Repo))
 
-# Install all template files
-File.rm_rf(MixHelpers.tmp_path())
+{:ok, _pid} = DummyWeb.Endpoint.start_link()
+{:ok, _pid} = Dummy.Repo.start_link()
 
-templates = [application: ~w(edit new form index show),
-             authorization: ~w(error new show),
-             authorized_application: ~w(index),
-             layout: ~w(app)]
-
-for {name, files} <- templates do
-  apps   = [".", :phoenix_oauth2_provider]
-  source = "priv/boilerplate/templates/#{name}"
-  mapping = Enum.map(files, fn file -> {:eex, "#{file}.html.eex", "priv/test/tmp/templates/#{name}/#{file}.html.eex"} end)
-
-  Mix.Phoenix.copy_from(apps, source, binding(), mapping)
-end
-IEx.Helpers.recompile()
-
-Logger.configure(level: :info)
-
-{:ok, _pid} = Endpoint.start_link()
-{:ok, _pid} = Repo.start_link()
-
-Ecto.Adapters.SQL.Sandbox.mode(Repo, :manual)
+Ecto.Adapters.SQL.Sandbox.mode(Dummy.Repo, :manual)

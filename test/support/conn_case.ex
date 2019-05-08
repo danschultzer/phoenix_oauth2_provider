@@ -1,4 +1,4 @@
-defmodule PhoenixOauth2Provider.Test.ConnCase do
+defmodule PhoenixOauth2Provider.ConnCase do
   @moduledoc """
   This module defines the test case to be used by
   tests that require setting up a connection.
@@ -15,17 +15,14 @@ defmodule PhoenixOauth2Provider.Test.ConnCase do
   use ExUnit.CaseTemplate
 
   alias Ecto.Adapters.SQL.Sandbox
-  alias PhoenixOauth2Provider.Test.{Endpoint,
-                                    ErrorView,
-                                    Repo,
-                                    Router.Helpers}
+  alias Dummy.Repo
+  alias DummyWeb.{Endpoint, Router.Helpers}
   alias Phoenix.ConnTest
 
   using do
     quote do
-      # Import conveniences for testing with connections
       use ConnTest
-      import ErrorView
+
       alias Helpers, as: Routes
 
       @endpoint Endpoint
