@@ -4,10 +4,10 @@ defmodule PhoenixOauth2Provider.TokenController do
 
   alias ExOauth2Provider.Token
 
-  @spec create(Conn.t(), map()) :: Conn.t()
-  def create(conn, params) do
+  @spec create(Conn.t(), map(), keyword()) :: Conn.t()
+  def create(conn, params, config) do
     params
-    |> Token.grant()
+    |> Token.grant(config)
     |> case do
       {:ok, access_token} ->
         json(conn, access_token)
@@ -19,10 +19,10 @@ defmodule PhoenixOauth2Provider.TokenController do
     end
   end
 
-  @spec revoke(Conn.t(), map()) :: Conn.t()
-  def revoke(conn, params) do
+  @spec revoke(Conn.t(), map(), keyword()) :: Conn.t()
+  def revoke(conn, params, config) do
     params
-    |> Token.revoke()
+    |> Token.revoke(config)
     |> case do
       {:ok, response} ->
         json(conn, response)

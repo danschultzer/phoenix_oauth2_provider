@@ -1,6 +1,6 @@
 defmodule DummyWeb.Router do
   use Phoenix.Router
-  use PhoenixOauth2Provider.Router
+  use PhoenixOauth2Provider.Router, otp_app: :phoenix_oauth2_provider
 
   pipeline :browser do
     plug :accepts, ["html"]

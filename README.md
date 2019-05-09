@@ -35,7 +35,7 @@ Set up routes:
 ```elixir
 defmodule MyAppWeb.Router do
   use MyAppWeb, :router
-  use PhoenixOauth2Provider.Router
+  use PhoenixOauth2Provider.Router, otp_app: :my_app
 
   # ...
 

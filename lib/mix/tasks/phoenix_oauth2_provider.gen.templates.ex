@@ -12,7 +12,6 @@ defmodule Mix.Tasks.PhoenixOauth2Provider.Gen.Templates do
   """
   use Mix.Task
 
-  alias ExOauth2Provider.Config
   alias Mix.ExOauth2Provider
   alias Mix.PhoenixOauth2Provider.Template
 
@@ -35,7 +34,7 @@ defmodule Mix.Tasks.PhoenixOauth2Provider.Gen.Templates do
   defp create_template_files(config) do
     config
     |> Map.get(:context_app)
-    |> Kernel.||(Config.otp_app())
+    |> Kernel.||(ExOauth2Provider.otp_app())
     |> Template.create_view_and_template_files()
   end
 end
