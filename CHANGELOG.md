@@ -4,6 +4,7 @@
 
 * Require ExOauth2Provider v0.5.1
 * Pass configuration to all ExOauth2Provider methods
+* Removed `ExOauth2Provider.Config.native_redirect_uri/1` call in templates in favor of using assigns
 
 ## v0.5.0 (2019-05-08)
 

@@ -76,10 +76,10 @@ defmodule PhoenixOauth2Provider.Controller do
 
   @doc false
   def __action_params__(conn, config, :api), do: [conn, conn.params, config]
-  def __action_params__(conn, config, _any), do: [conn, conn.params, current_resource_owner(conn), config]
+  def __action_params__(conn, config, _any), do: [conn, conn.params, current_resource_owner(conn, config), config]
 
-  defp current_resource_owner(conn) do
-    resource_owner_key = Config.current_resource_owner([])
+  defp current_resource_owner(conn, config) do
+    resource_owner_key = Config.current_resource_owner(config)
 
     case Map.get(conn.assigns, resource_owner_key) do
       nil            -> raise "Resource owner was not found with :#{resource_owner_key} assigns"

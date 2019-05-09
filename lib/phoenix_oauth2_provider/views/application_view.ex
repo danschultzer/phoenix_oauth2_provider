@@ -27,9 +27,9 @@ defmodule PhoenixOauth2Provider.ApplicationView do
     <%%= textarea f, :redirect_uri %>
     <%%= error_tag f, :redirect_uri %>
     <span class="help-block">Use one line per URI</span>
-  <%%= unless is_nil(ExOauth2Provider.Config.native_redirect_uri([])) do %>
+  <%%= if is_nil(@native_redirect_uri) do %>
       <span class="help-block">
-        Use <code><%%= ExOauth2Provider.Config.native_redirect_uri([]) %></code> for local tests
+        Use <code><%%= @native_redirect_uri %></code> for local tests
       </span>
   <%% end %>
 
