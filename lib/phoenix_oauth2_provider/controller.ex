@@ -16,7 +16,8 @@ defmodule PhoenixOauth2Provider.Controller do
       defdelegate put_web_module_view(conn, type), to: unquote(__MODULE__), as: :__put_web_module_view__
 
       def action(conn, _opts) do
-        params = unquote(__MODULE__).__action_params__(conn, unquote(type))
+        config = conn.private[:phoenix_oauth2_provider_config]
+        params = unquote(__MODULE__).__action_params__(conn, config, unquote(type))
 
         apply(__MODULE__, action_name(conn), params)
       end
@@ -74,8 +75,8 @@ defmodule PhoenixOauth2Provider.Controller do
   defp load_config(conn), do: Map.get(conn.private, :phoenix_oauth2_provider_config, [])
 
   @doc false
-  def __action_params__(conn, :api), do: [conn, conn.params]
-  def __action_params__(conn, _any), do: [conn, conn.params, current_resource_owner(conn)]
+  def __action_params__(conn, config, :api), do: [conn, conn.params, config]
+  def __action_params__(conn, config, _any), do: [conn, conn.params, current_resource_owner(conn), config]
 
   defp current_resource_owner(conn) do
     resource_owner_key = Config.current_resource_owner([])

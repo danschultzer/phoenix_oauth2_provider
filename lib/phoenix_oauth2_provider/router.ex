@@ -42,8 +42,9 @@ defmodule PhoenixOauth2Provider.Router do
       end
   """
 
-  defmacro __using__(_opts \\ []) do
+  defmacro __using__(config \\ []) do
     quote do
+      @phoenix_oauth2_provider_config unquote(config)
       import unquote(__MODULE__)
     end
   end
@@ -63,7 +64,7 @@ defmodule PhoenixOauth2Provider.Router do
   """
   defmacro oauth_routes(options \\ []) do
     quote location: :keep do
-      oauth_scope unquote(options) do
+      oauth_scope unquote(options), @phoenix_oauth2_provider_config do
         scope "/authorize" do
           get "/", AuthorizationController, :new
           post "/", AuthorizationController, :create
@@ -92,7 +93,7 @@ defmodule PhoenixOauth2Provider.Router do
   """
   defmacro oauth_api_routes(options \\ []) do
     quote location: :keep do
-      oauth_scope unquote(options) do
+      oauth_scope unquote(options), @phoenix_oauth2_provider_config do
         post "/token", TokenController, :create
         post "/revoke", TokenController, :revoke
       end
@@ -100,11 +101,11 @@ defmodule PhoenixOauth2Provider.Router do
   end
 
   @doc false
-  defmacro oauth_scope(options \\ [], do: context) do
+  defmacro oauth_scope(options \\ [], config \\ [], do: context) do
     quote do
       path = Keyword.get(unquote(options), :path, "oauth")
 
-      scope "/#{path}", PhoenixOauth2Provider, as: "oauth" do
+      scope "/#{path}", PhoenixOauth2Provider, as: "oauth", private: %{phoenix_oauth2_provider_config: unquote(config)} do
         unquote(context)
       end
     end

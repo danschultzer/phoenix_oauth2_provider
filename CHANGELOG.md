@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.5.1 (TBA)
+
+* Require ExOauth2Provider v0.5.1
+* Pass configuration to all ExOauth2Provider methods
+
 ## v0.5.0 (2019-05-08)
 
 This is a full rewrite of the library, and are several breaking changes. You're encouraged to test your app well if you upgrade from 0.4.x.

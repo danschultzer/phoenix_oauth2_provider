@@ -5,10 +5,10 @@ defmodule PhoenixOauth2Provider.AuthorizationController do
   alias ExOauth2Provider.Authorization
   alias Plug.Conn
 
-  @spec new(Conn.t(), map(), map()) :: Conn.t()
-  def new(conn, params, resource_owner) do
+  @spec new(Conn.t(), map(), map(), keyword()) :: Conn.t()
+  def new(conn, params, resource_owner, config) do
     resource_owner
-    |> Authorization.preauthorize(params)
+    |> Authorization.preauthorize(params, config)
     |> case do
       {:ok, client, scopes} ->
         render(conn, "new.html", params: params, client: client, scopes: scopes)
@@ -26,22 +26,22 @@ defmodule PhoenixOauth2Provider.AuthorizationController do
     end
   end
 
-  @spec create(Conn.t(), map(), map()) :: Conn.t()
-  def create(conn, params, resource_owner) do
+  @spec create(Conn.t(), map(), map(), keyword()) :: Conn.t()
+  def create(conn, params, resource_owner, config) do
     resource_owner
-    |> Authorization.authorize(params)
+    |> Authorization.authorize(params, config)
     |> redirect_or_render(conn)
   end
 
-  @spec delete(Conn.t(), map(), map()) :: Conn.t()
-  def delete(conn, params, resource_owner) do
+  @spec delete(Conn.t(), map(), map(), keyword()) :: Conn.t()
+  def delete(conn, params, resource_owner, config) do
     resource_owner
-    |> Authorization.deny(params)
+    |> Authorization.deny(params, config)
     |> redirect_or_render(conn)
   end
 
-  @spec show(Conn.t(), map(), map()) :: Conn.t()
-  def show(conn, %{"code" => code}, _resource_owner) do
+  @spec show(Conn.t(), map(), map(), keyword()) :: Conn.t()
+  def show(conn, %{"code" => code}, _resource_owner, _config) do
     render(conn, "show.html", code: code)
   end
 

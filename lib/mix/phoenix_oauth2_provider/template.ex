@@ -1,8 +1,7 @@
 defmodule Mix.PhoenixOauth2Provider.Template do
   @moduledoc false
 
-  alias ExOauth2Provider.Config
-  alias Mix.{Generator, Phoenix}
+  alias Mix.{ExOauth2Provider, Generator, Phoenix}
 
   @views ["application", "authorization", "authorized_application"]
   @view_template """
@@ -54,7 +53,7 @@ defmodule Mix.PhoenixOauth2Provider.Template do
   defp web_path(context_app), do: Phoenix.web_path(context_app)
 
   defp web_app(ctx_app) do
-    this_app = Config.otp_app()
+    this_app = ExOauth2Provider.otp_app()
 
     if ctx_app == this_app do
       "#{ctx_app}_web"
