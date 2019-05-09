@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.5.1 (TBA)
+## v0.5.1 (2019-05-08)
 
 * Require ExOauth2Provider v0.5.1
 * Pass configuration to all ExOauth2Provider methods
