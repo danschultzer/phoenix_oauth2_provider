@@ -40,7 +40,7 @@ defmodule PhoenixOauth2Provider.Mixfile do
       {:phoenix_html, "~> 2.0"},
 
       {:phoenix_ecto, "~> 4.0.0", only: [:test, :dev]},
-      {:credo, "~> 0.10", only: [:dev, :test]},
+      {:credo, "~> 1.1.0", only: [:dev, :test]},
       {:jason, "~> 1.0", only: [:dev, :test]},
 
       {:ex_doc, ">= 0.0.0", only: :dev},
