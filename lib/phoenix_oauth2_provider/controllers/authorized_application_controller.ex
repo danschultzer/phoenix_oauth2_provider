@@ -2,6 +2,7 @@ defmodule PhoenixOauth2Provider.AuthorizedApplicationController do
   @moduledoc false
   use PhoenixOauth2Provider.Controller
   alias ExOauth2Provider.Applications
+  alias Plug.Conn
 
   @spec index(Conn.t(), map(), map(), keyword()) :: Conn.t()
   def index(conn, _params, resource_owner, config) do
