@@ -68,7 +68,6 @@ defmodule PhoenixOauth2Provider.Router do
         scope "/authorize" do
           get "/", AuthorizationController, :new
           post "/", AuthorizationController, :create
-          get "/:code", AuthorizationController, :show
           delete "/", AuthorizationController, :delete
         end
         resources "/applications", ApplicationController, param: "uid"

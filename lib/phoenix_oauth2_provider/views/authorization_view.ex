@@ -42,11 +42,4 @@ defmodule PhoenixOauth2Provider.AuthorizationView do
     <%% end %>
   </div>
   """
-
-  template "show.html",
-  """
-  <h1>Authorization code</h1>
-
-  <code><%%= @code %></code>
-  """
 end

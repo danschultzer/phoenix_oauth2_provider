@@ -40,11 +40,6 @@ defmodule PhoenixOauth2Provider.AuthorizationController do
     |> redirect_or_render(conn)
   end
 
-  @spec show(Conn.t(), map(), map(), keyword()) :: Conn.t()
-  def show(conn, %{"code" => code}, _resource_owner, _config) do
-    render(conn, "show.html", code: code)
-  end
-
   defp redirect_or_render({:redirect, redirect_uri}, conn) do
     redirect(conn, external: redirect_uri)
   end
