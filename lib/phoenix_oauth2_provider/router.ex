@@ -61,8 +61,36 @@ defmodule PhoenixOauth2Provider.Router do
 
         oauth_routes()
       end
+
+      # equivalent to
+      scope "/" do
+        pipe_through [:browser, :protected]
+
+        oauth_authorize_routes()
+        oauth_applications_routes()
+      end
   """
   defmacro oauth_routes(options \\ []) do
+    quote location: :keep do
+      oauth_authorize_routes(unquote(options))
+      oauth_applications_routes(unquote(options))
+    end
+  end
+
+  @doc """
+  OAuth 2.0 browser routes macro.
+
+  Use this macro to define the authorization related protected browser oauth routes (authorize application by user and revoke previous approvals).
+
+  ## Example
+
+      scope "/" do
+        pipe_through [:browser, :protected]
+
+        oauth_authorize_routes()
+      end
+  """
+  defmacro oauth_authorize_routes(options \\ []) do
     quote location: :keep do
       oauth_scope unquote(options), @phoenix_oauth2_provider_config do
         scope "/authorize" do
@@ -71,8 +99,28 @@ defmodule PhoenixOauth2Provider.Router do
           get "/:code", AuthorizationController, :show
           delete "/", AuthorizationController, :delete
         end
-        resources "/applications", ApplicationController, param: "uid"
         resources "/authorized_applications", AuthorizedApplicationController, only: [:index, :delete], param: "uid"
+      end
+    end
+  end
+
+  @doc """
+  OAuth 2.0 browser routes macro.
+
+  Use this macro to define the applications related protected browser oauth routes (list, create, edit oauth applications).
+
+  ## Example
+
+      scope "/" do
+        pipe_through [:browser, :admin_protected]
+
+        oauth_applications_routes()
+      end
+  """
+  defmacro oauth_applications_routes(options \\ []) do
+    quote location: :keep do
+      oauth_scope unquote(options), @phoenix_oauth2_provider_config do
+        resources "/applications", ApplicationController, param: "uid"
       end
     end
   end

@@ -59,6 +59,8 @@ defmodule MyAppWeb.Router do
 end
 ```
 
+> Instead of `oauth_routes()` you can use both `oauth_authorize_routes()` and `oauth_applications_routes()` for more granular control.
+
 That's it! The following OAuth 2.0 routes will now be available in your app:
 
 ```text
