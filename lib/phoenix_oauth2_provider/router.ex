@@ -100,6 +100,14 @@ defmodule PhoenixOauth2Provider.Router do
     end
   end
 
+  defmacro oauth_token_introspection_routes(options \\ []) do
+    quote location: :keep do
+      oauth_scope unquote(options), @phoenix_oauth2_provider_config do
+        post "/introspect", TokenController, :introspect
+      end
+    end
+  end
+
   @doc false
   defmacro oauth_scope(options \\ [], config \\ [], do: context) do
     quote do
