@@ -72,6 +72,27 @@ oauth_token_path      POST   /oauth/revoke            TokenController :revoke
 
 Please read the [ExOauth2Provider](https://github.com/danschultzer/ex_oauth2_provider) documentation for further customization.
 
+### Token introspection
+
+Token introspection (as per [RFC-7662](https://datatracker.ietf.org/doc/html/rfc7662)]) can be enabled with `oauth_token_introspection_routes()`:
+
+```elixir
+defmodule MyAppWeb.Router do
+  use MyAppWeb, :router
+  use PhoenixOauth2Provider.Router, otp_app: :my_app
+
+  scope "/" do
+    pipe_through :api
+
+    oauth_token_introspection_routes()
+  end
+end
+```
+
+```text
+oauth_token_path  POST  /oauth/introspect       TokenController :introspect
+```
+
 ## Configuration
 
 ### Templates

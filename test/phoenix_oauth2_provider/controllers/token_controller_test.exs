@@ -120,4 +120,36 @@ defmodule PhoenixOauth2Provider.TokenControllerTest do
     |> List.last()
     |> Map.get(:token)
   end
+
+  describe "with introspection strategy" do
+    setup %{conn: conn, application: application} do
+      user = Fixtures.user()
+      access_token = Fixtures.access_token(%{application: application, user: user, use_refresh_token: true})
+      request = %{client_id: application.uid,
+                  client_secret: application.secret,
+                  token: access_token.token}
+
+      {:ok, conn: conn, request: request, access_token: access_token}
+    end
+
+    test "introspect/2 with access token", %{conn: conn, request: request, access_token: access_token} do
+      conn = post conn, Routes.oauth_token_path(conn, :introspect, request)
+      body = json_response(conn, 200)
+      assert %{"active" => true, "scope" => actual_scopes} = body
+      assert actual_scopes == access_token.scopes
+    end
+
+    test "introspect/2 with refresh token", %{conn: conn, request: request, access_token: access_token} do
+      IO.inspect(conn)
+      conn = post conn, Routes.oauth_token_path(conn, :introspect, Map.merge(request, %{token: access_token.refresh_token}))
+      body = json_response(conn, 200)
+      assert %{"active" => true} = body
+    end
+
+    test "introspect/2 with invalid token", %{conn: conn, request: request} do
+      conn = post conn, Routes.oauth_token_path(conn, :introspect, Map.merge(request, %{token: "invalid"}))
+      body = json_response(conn, 200)
+      assert body == %{"active" => false}
+    end
+  end
 end

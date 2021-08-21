@@ -33,4 +33,19 @@ defmodule PhoenixOauth2Provider.TokenController do
         |> json(error)
     end
   end
+
+  def introspect(conn, params, config) do
+    params
+    |> Token.introspect(config)
+    |> case do
+      {:ok, response} ->
+        json(conn, response)
+
+      {:error, error, status} ->
+        conn
+        |> put_status(status)
+        |> json(error)
+    end
+  end
+
 end
