@@ -18,5 +18,6 @@ defmodule DummyWeb.Router do
     pipe_through :browser
 
     oauth_routes()
+    oauth_token_introspection_routes()
   end
 end
