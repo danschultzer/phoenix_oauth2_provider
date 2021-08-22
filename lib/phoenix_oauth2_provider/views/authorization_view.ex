@@ -30,6 +30,12 @@ defmodule PhoenixOauth2Provider.AuthorizationView do
       <input type="hidden" name="state" value="<%%= @params["state"] %>" />
       <input type="hidden" name="response_type" value="<%%= @params["response_type"] %>" />
       <input type="hidden" name="scope" value="<%%= @params["scope"] %>" />
+      <%%= if @params["code_challenge"] do %>
+        <input type="hidden" name="code_challenge" value="<%%= @params["code_challenge"] %>" />
+      <%% end %>
+      <%%= if @params["code_challenge_method"] do %>
+        <input type="hidden" name="code_challenge_method" value="<%%= @params["code_challenge_method"] %>" />
+      <%% end %>
       <%%= submit "Authorize" %>
     <%% end %>
     <%%= form_tag Routes.oauth_authorization_path(@conn, :delete), method: :delete do %>
@@ -38,6 +44,12 @@ defmodule PhoenixOauth2Provider.AuthorizationView do
       <input type="hidden" name="state" value="<%%= @params["state"] %>" />
       <input type="hidden" name="response_type" value="<%%= @params["response_type"] %>" />
       <input type="hidden" name="scope" value="<%%= @params["scope"] %>" />
+      <%%= if @params["code_challenge"] do %>
+        <input type="hidden" name="code_challenge" value="<%%= @params["code_challenge"] %>" />
+      <%% end %>
+      <%%= if @params["code_challenge_method"] do %>
+        <input type="hidden" name="code_challenge_method" value="<%%= @params["code_challenge_method"] %>" />
+      <%% end %>
       <%%= submit "Deny" %>
     <%% end %>
   </div>
