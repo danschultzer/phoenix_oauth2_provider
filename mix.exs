@@ -7,7 +7,7 @@ defmodule PhoenixOauth2Provider.Mixfile do
     [
       app: :phoenix_oauth2_provider,
       version: @version,
-      elixir: "~> 1.8",
+      elixir: "~> 1.12",
       elixirc_paths: elixirc_paths(Mix.env),
       start_permanent: Mix.env == :prod,
       compilers: [:phoenix] ++ Mix.compilers,
@@ -37,9 +37,9 @@ defmodule PhoenixOauth2Provider.Mixfile do
     [
       {:ex_oauth2_provider, "~> 0.5.1"},
       {:phoenix, "~> 1.4"},
-      {:phoenix_html, "~> 2.0"},
+      {:phoenix_html, "~> 3.0"},
 
-      {:phoenix_ecto, "~> 4.0.0", only: [:test, :dev]},
+      {:phoenix_ecto, "~> 4.1", only: [:test, :dev]},
       {:credo, "~> 1.1.0", only: [:dev, :test]},
       {:jason, "~> 1.0", only: [:dev, :test]},
 
