@@ -14,15 +14,14 @@ defmodule PhoenixOauth2Provider.ConnCase do
   """
   use ExUnit.CaseTemplate
 
-  alias Ecto.Adapters.SQL.Sandbox
   alias Dummy.Repo
   alias DummyWeb.{Endpoint, Router.Helpers}
-  alias Phoenix.ConnTest
+  alias Ecto.Adapters.SQL.Sandbox
 
   using do
     quote do
-      use ConnTest
-
+      import Plug.Conn
+      import Phoenix.ConnTest
       alias Helpers, as: Routes
 
       @endpoint Endpoint
@@ -33,6 +32,7 @@ defmodule PhoenixOauth2Provider.ConnCase do
     unless tags[:async] do
       :ok = Sandbox.checkout(Repo)
     end
-    {:ok, conn: ConnTest.build_conn()}
+
+    {:ok, conn: Phoenix.ConnTest.build_conn()}
   end
 end

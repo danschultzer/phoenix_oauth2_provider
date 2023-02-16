@@ -11,9 +11,11 @@ defmodule PhoenixOauth2Provider.Controller do
 
       alias PhoenixOauth2Provider.Router.Helpers, as: Routes
 
-      plug :put_web_module_view, unquote(type)
+      plug(:put_web_module_view, unquote(type))
 
-      defdelegate put_web_module_view(conn, type), to: unquote(__MODULE__), as: :__put_web_module_view__
+      defdelegate put_web_module_view(conn, type),
+        to: unquote(__MODULE__),
+        as: :__put_web_module_view__
 
       def action(conn, _opts) do
         config = conn.private[:phoenix_oauth2_provider_config]
@@ -26,6 +28,7 @@ defmodule PhoenixOauth2Provider.Controller do
 
   @doc false
   def __put_web_module_view__(conn, :api), do: conn
+
   def __put_web_module_view__(conn, _type) do
     web_module =
       conn
@@ -51,6 +54,7 @@ defmodule PhoenixOauth2Provider.Controller do
 
     put_layout(conn, web_module)
   end
+
   defp put_layout(conn, web_module) do
     conn
     |> Phoenix.Controller.layout()
@@ -66,6 +70,7 @@ defmodule PhoenixOauth2Provider.Controller do
   end
 
   defp put_view(conn, nil), do: conn
+
   defp put_view(%{private: %{phoenix_view: phoenix_view}} = conn, web_module) do
     view_module = Module.concat([web_module, phoenix_view])
 
@@ -76,13 +81,15 @@ defmodule PhoenixOauth2Provider.Controller do
 
   @doc false
   def __action_params__(conn, config, :api), do: [conn, conn.params, config]
-  def __action_params__(conn, config, _any), do: [conn, conn.params, current_resource_owner(conn, config), config]
+
+  def __action_params__(conn, config, _any),
+    do: [conn, conn.params, current_resource_owner(conn, config), config]
 
   defp current_resource_owner(conn, config) do
     resource_owner_key = Config.current_resource_owner(config)
 
     case Map.get(conn.assigns, resource_owner_key) do
-      nil            -> raise "Resource owner was not found with :#{resource_owner_key} assigns"
+      nil -> raise "Resource owner was not found with :#{resource_owner_key} assigns"
       resource_owner -> resource_owner
     end
   end
