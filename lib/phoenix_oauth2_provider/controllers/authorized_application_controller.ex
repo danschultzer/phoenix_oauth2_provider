@@ -13,10 +13,9 @@ defmodule PhoenixOauth2Provider.AuthorizedApplicationController do
 
   @spec delete(Conn.t(), map(), map(), keyword()) :: Conn.t()
   def delete(conn, %{"uid" => uid}, resource_owner, config) do
-    {:ok, _application} =
-      uid
-      |> Applications.get_application!(config)
-      |> Applications.revoke_all_access_tokens_for(resource_owner, config)
+    uid
+    |> Applications.get_application!(config)
+    |> Applications.revoke_all_access_tokens_for(resource_owner, config)
 
     conn
     |> put_flash(:info, "Application revoked.")

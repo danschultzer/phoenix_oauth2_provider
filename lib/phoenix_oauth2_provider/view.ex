@@ -19,14 +19,14 @@ defmodule PhoenixOauth2Provider.View do
   @doc false
   defmacro __before_compile__(_env) do
     quote do
-      @spec templates() :: [binary()]
-      def templates(), do: @templates
+      @spec templates :: [binary()]
+      def templates, do: @templates
     end
   end
 
   defmacro template(template, content) do
     content = EEx.eval_string(content)
-    quoted  = EEx.compile_string(content, engine: Phoenix.HTML.Engine, line: 1, trim: true)
+    quoted = EEx.compile_string(content, engine: Phoenix.HTML.Engine, line: 1, trim: true)
 
     quote do
       @templates unquote(template)
@@ -45,6 +45,7 @@ defmodule PhoenixOauth2Provider.View do
     |> Keyword.get_values(field)
     |> Enum.map(&error_tag/1)
   end
+
   def error_tag(error) do
     Tag.content_tag(:span, translate_error(error), class: "help-block")
   end
@@ -54,7 +55,7 @@ defmodule PhoenixOauth2Provider.View do
       token = "%{#{key}}"
 
       case String.contains?(msg, token) do
-        true  -> String.replace(msg, token, to_string(value), global: false)
+        true -> String.replace(msg, token, to_string(value), global: false)
         false -> msg
       end
     end)

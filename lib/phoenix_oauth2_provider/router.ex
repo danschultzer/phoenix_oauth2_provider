@@ -66,13 +66,18 @@ defmodule PhoenixOauth2Provider.Router do
     quote location: :keep do
       oauth_scope unquote(options), @phoenix_oauth2_provider_config do
         scope "/authorize" do
-          get "/", AuthorizationController, :new
-          post "/", AuthorizationController, :create
-          get "/:code", AuthorizationController, :show
-          delete "/", AuthorizationController, :delete
+          get("/", AuthorizationController, :new)
+          post("/", AuthorizationController, :create)
+          get("/:code", AuthorizationController, :show)
+          delete("/", AuthorizationController, :delete)
         end
-        resources "/applications", ApplicationController, param: "uid"
-        resources "/authorized_applications", AuthorizedApplicationController, only: [:index, :delete], param: "uid"
+
+        resources("/applications", ApplicationController, param: "uid")
+
+        resources("/authorized_applications", AuthorizedApplicationController,
+          only: [:index, :delete],
+          param: "uid"
+        )
       end
     end
   end
@@ -94,8 +99,8 @@ defmodule PhoenixOauth2Provider.Router do
   defmacro oauth_api_routes(options \\ []) do
     quote location: :keep do
       oauth_scope unquote(options), @phoenix_oauth2_provider_config do
-        post "/token", TokenController, :create
-        post "/revoke", TokenController, :revoke
+        post("/token", TokenController, :create)
+        post("/revoke", TokenController, :revoke)
       end
     end
   end
@@ -105,7 +110,9 @@ defmodule PhoenixOauth2Provider.Router do
     quote do
       path = Keyword.get(unquote(options), :path, "oauth")
 
-      scope "/#{path}", PhoenixOauth2Provider, as: "oauth", private: %{phoenix_oauth2_provider_config: unquote(config)} do
+      scope "/#{path}", PhoenixOauth2Provider,
+        as: "oauth",
+        private: %{phoenix_oauth2_provider_config: unquote(config)} do
         unquote(context)
       end
     end
@@ -114,25 +121,31 @@ defmodule PhoenixOauth2Provider.Router do
   defmodule Helpers do
     @moduledoc false
 
-    alias Plug.Conn
     alias PhoenixOauth2Provider.Controller
+    alias Plug.Conn
 
     @spec oauth_application_path(Conn.t(), atom()) :: binary()
-    def oauth_application_path(conn, action), do: Controller.routes(conn).oauth_application_path(conn, action)
+    def oauth_application_path(conn, action),
+      do: Controller.routes(conn).oauth_application_path(conn, action)
 
     @spec oauth_application_path(Conn.t(), atom(), map()) :: binary()
-    def oauth_application_path(conn, action, application), do: Controller.routes(conn).oauth_application_path(conn, action, application)
+    def oauth_application_path(conn, action, application),
+      do: Controller.routes(conn).oauth_application_path(conn, action, application)
 
     @spec oauth_authorization_path(Conn.t(), atom()) :: binary()
-    def oauth_authorization_path(conn, action), do: Controller.routes(conn).oauth_authorization_path(conn, action)
+    def oauth_authorization_path(conn, action),
+      do: Controller.routes(conn).oauth_authorization_path(conn, action)
 
     @spec oauth_authorization_path(Conn.t(), atom(), binary()) :: binary()
-    def oauth_authorization_path(conn, action, code), do: Controller.routes(conn).oauth_authorization_path(conn, action, code)
+    def oauth_authorization_path(conn, action, code),
+      do: Controller.routes(conn).oauth_authorization_path(conn, action, code)
 
     @spec oauth_application_path(Conn.t(), atom()) :: binary()
-    def oauth_authorized_application_path(conn, action), do: Controller.routes(conn).oauth_authorized_application_path(conn, action)
+    def oauth_authorized_application_path(conn, action),
+      do: Controller.routes(conn).oauth_authorized_application_path(conn, action)
 
     @spec oauth_application_path(Conn.t(), atom(), map()) :: binary()
-    def oauth_authorized_application_path(conn, action, application), do: Controller.routes(conn).oauth_authorized_application_path(conn, action, application)
+    def oauth_authorized_application_path(conn, action, application),
+      do: Controller.routes(conn).oauth_authorized_application_path(conn, action, application)
   end
 end

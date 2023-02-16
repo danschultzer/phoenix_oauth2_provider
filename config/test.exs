@@ -1,4 +1,4 @@
-use Mix.Config
+import Mix.Config
 
 config :phoenix, :json_library, Jason
 
@@ -19,5 +19,4 @@ config :phoenix_oauth2_provider, ExOauth2Provider,
   scopes: ~w(read write),
   use_refresh_token: true
 
-config :phoenix_oauth2_provider, PhoenixOauth2Provider,
-  current_resource_owner: :current_test_user
+config :phoenix_oauth2_provider, PhoenixOauth2Provider, current_resource_owner: :current_test_user
